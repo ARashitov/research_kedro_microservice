@@ -1,4 +1,10 @@
-# pipelines
+# project_templates
+
+## Before you start
+
+1. Create environment by execution `make env_create`
+2. Activate environment by execution `conda activate dev_template_repo`
+3. Configure environment by `make env_configure`
 
 ## Overview
 

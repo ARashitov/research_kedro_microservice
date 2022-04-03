@@ -1,8 +1,6 @@
 from setuptools import find_packages, setup
 
-entry_point = (
-    "projects_templates = pipelines.__main__:main"
-)
+entry_point = "projects_templates = pipelines.__main__:main"
 
 
 # get the dependencies and installs
@@ -34,6 +32,6 @@ setup(
             "sphinx_copybutton==0.3.1",
             "ipykernel>=5.3, <7.0",
             "Jinja2<3.1.0",
-        ]
+        ],
     },
 )

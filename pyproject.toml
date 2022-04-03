@@ -1,3 +1,8 @@
+[app.metadata]
+title = "project_template"
+version = "1.0.0"
+description = "Routes planning software back-end"
+
 [tool.kedro]
 package_name = "pipelines"
 project_name = "pipelines"

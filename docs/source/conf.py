@@ -152,7 +152,7 @@ latex_documents = [
         "pipelines Documentation",
         "Kedro",
         "manual",
-    )
+    ),
 ]
 
 # -- Options for manual page output ------------------------------------------
@@ -166,7 +166,7 @@ man_pages = [
         "pipelines Documentation",
         [author],
         1,
-    )
+    ),
 ]
 
 # -- Options for Texinfo output ----------------------------------------------
@@ -183,7 +183,7 @@ texinfo_documents = [
         "pipelines",
         "Project pipelines codebase.",
         "Data-Science",
-    )
+    ),
 ]
 
 # -- Options for todo extension ----------------------------------------------
