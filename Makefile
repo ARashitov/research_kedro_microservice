@@ -13,7 +13,7 @@ env_install_dependencies:
 # 	plus, pander[io] conflicts with kedro
 	pip3 install --upgrade pip \
 	&& pip3 install wheel \
-	&& pip3 install -r src/requirements.txt
+	&& pip3 install -r src/requirements.txt --no-cache-dir
 
 env_install_jupyter:
 	pip3 install jupyter ipykernel jupyter_contrib_nbextensions keplergl \
