@@ -2,9 +2,15 @@
 
 ## Before you start
 
+### Setup environment
 1. Create environment by execution `make env_create`
 2. Activate environment by execution `conda activate project_template`
 3. Configure environment by `make env_configure`
+
+### Get familiar with
+- [Conventional commit (Full doc)](https://www.conventionalcommits.org/en/v1.0.0/)
+- [Conventional commit (Summary)](https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13)
+- **Convention**: code in `main` branch must be deployable
 
 ## Overview
 
