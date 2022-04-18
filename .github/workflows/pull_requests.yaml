@@ -22,9 +22,6 @@ jobs:
     - name: Building test environment
       run: bash -c "make env_install_dependencies"
 
-    - name: Building test environment
-      run: bash -c "make env_install_dependencies"
-
     - name: Test Flake8 linting
       run: bash -c "flake8 --config setup.cfg ./src"
 
