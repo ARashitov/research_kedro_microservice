@@ -1,7 +1,9 @@
 [app.metadata]
 title = "project_template"
-version = "1.0.0"
 description = "Routes planning software back-end"
+
+[tool.commitizen]
+version = "0.1.0"
 
 [tool.kedro]
 package_name = "pipelines"
@@ -25,8 +27,3 @@ addopts = """
 fail_under = 0
 show_missing = true
 exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
-
-[tool.commitizen]
-name = "cz_conventional_commits"
-version = "0.1.0"
-tag_format = "$version"

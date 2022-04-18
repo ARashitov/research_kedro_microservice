@@ -58,11 +58,11 @@ def _load_application_metadata(pyproject_toml: Path) -> Dict[str, Any]:
     return metadata_dict
 
 
-def _get_app_metadata(metadata_dict: Dict[str, Any]) -> Dict[str, str]:
+def _get_app_metadata(pyproect_content: Dict[str, Any]) -> Dict[str, str]:
     """Extracts application metadata
 
     Args:
-        metadata_dict (Dict[str, Any]): source newly readed config
+        pyproect_content (Dict[str, Any]): source newly readed config
 
     Raises:
         RuntimeError: if does't find [app.metadata]' section in pyproject.toml
@@ -71,11 +71,22 @@ def _get_app_metadata(metadata_dict: Dict[str, Any]) -> Dict[str, str]:
         Dict[str, str]: application metadata form pyproject.toml
     """
     try:
-        metadata_dict = metadata_dict["app"]["metadata"]
+        metadata_dict = pyproect_content["app"]["metadata"]
     except KeyError as exc:
         raise RuntimeError(
             f"There's no '[app.metadata]' section in the '{_PYPROJECT}'. "
             f"Please add '[app.metadata]' section to the file with appropriate "
+            f"configuration parameters.",
+        ) from exc
+    try:
+        metadata_dict = {
+            **metadata_dict,
+            **pyproect_content["tool"]["commitizen"],
+        }
+    except KeyError as exc:
+        raise RuntimeError(
+            f"There's no '[tool.commitizen]' section in the '{_PYPROJECT}'. "
+            f"Please add '[tool.commitizen]' section to the file with appropriate "
             f"configuration parameters.",
         ) from exc
     return metadata_dict
@@ -139,7 +150,6 @@ def _get_project_metadata(project_path: Union[str, Path]) -> ProjectMetadata:
     pyproject_toml = _get_pyproject_toml_file(project_path)
     metadata_dict = _load_application_metadata(pyproject_toml)
     metadata_dict = _get_app_metadata(metadata_dict)
-
     mandatory_keys = ["title", "version", "description"]
     _check_mandatory_keys(metadata_dict, mandatory_keys)
     return _initilize_project_metadata(metadata_dict, mandatory_keys)
