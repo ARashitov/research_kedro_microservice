@@ -9,12 +9,8 @@
         "labels": ["bug"]
       },
       {
-        "title": "## 🧪 Research",
-        "labels": ["research"]
-      },
-      {
         "title": "## 🛠 Others",
-        "labels": ["others"]
+        "labels": ["other"]
       },
       {
         "title": "## 🔬 Research",
