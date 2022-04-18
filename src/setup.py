@@ -1,6 +1,8 @@
+"""Setup module for kedro
+"""
 from setuptools import find_packages, setup
 
-entry_point = "projects_templates = pipelines.__main__:main"
+ENTRY_POINT = "projects_templates = pipelines.__main__:main"
 
 
 # get the dependencies and installs
@@ -18,7 +20,7 @@ setup(
     name="pipelines",
     version="0.1",
     packages=find_packages(exclude=["tests"]),
-    entry_points={"console_scripts": [entry_point]},
+    entry_points={"console_scripts": [ENTRY_POINT]},
     install_requires=requires,
     extras_require={
         "docs": [
