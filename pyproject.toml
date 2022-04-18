@@ -3,7 +3,7 @@ title = "project_template"
 description = "Routes planning software back-end"
 
 [tool.commitizen]
-version = "0.2.4"
+version = "0.2.5"
 
 [tool.kedro]
 package_name = "pipelines"
