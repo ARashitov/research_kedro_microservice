@@ -1,0 +1,25 @@
+name: "Source code release"
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+
+  source-code-release:
+
+    name: "Source code release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ github.ref_name }}
+          prerelease: false
+          title: ${{ github.ref_name }}
+          configuration: ".changelog.json"
