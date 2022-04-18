@@ -6,7 +6,7 @@ env_configure: env_install_dependencies env_install_jupyter env_install_precommi
 	echo "Environment is configured"
 
 env_install_precommit_hooks:
-	pre-commit install
+	pre-commit install && pre-commit install --hook-type commit-msg
 
 env_install_dependencies:
 # NOTE: kedro is not available for python3.9 yet
@@ -35,7 +35,7 @@ run_uvicorn:
 	uvicorn src.backend.main:app --host 0.0.0.0 --port 8000 --reload --log-config ./log.ini
 
 run_test:
-	coverage run -m pytest ./src/tests -v --log-cli-level=ERROR --asyncio-mode=auto && coverage report -m
+	kedro test
 
 run_update_kedro_context:
 	python3 conf/context_management/main.py

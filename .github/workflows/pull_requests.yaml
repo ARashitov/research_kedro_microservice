@@ -1,4 +1,4 @@
-name: Autotest executions
+name: Continious integration
 
 on:
   pull_request:
@@ -6,28 +6,33 @@ on:
 
 jobs:
 
-  pull-requests-autotesting:
+  application-testing:
 
-    name: "pull-requests-autotesting"
     runs-on: ubuntu-latest
 
     steps:
 
     - uses: actions/checkout@v2
 
-    - name: Set up Python 3.9
+    - name: Set up Python 3.10
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9.5
+        python-version: 3.10.4
 
     - name: Building test environment
       run: bash -c "make env_install_dependencies"
 
-    # - name: Autotesting
-    #   env:
-    #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #     AUTH_KEY:  ${{ secrets.AUTH_KEY }}
-    #     APP_ENV: test
-    #     google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
-    #   run: bash -c "make run_update_kedro_context && make run_test"
+    - name: Test Flake8 linting
+      run: bash -c "flake8 --config setup.cfg ./src"
+
+    - name: Test Pylint linting
+      run: bash -c "pylint --rcfile pylint.rc ./src"
+
+    - name: Autotesting
+      env:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AUTH_KEY:  ${{ secrets.AUTH_KEY }}
+        APP_ENV: test
+        google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
+      run: bash -c "make run_update_kedro_context && make run_test"
