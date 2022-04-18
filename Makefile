@@ -35,7 +35,7 @@ run_uvicorn:
 	uvicorn src.backend.main:app --host 0.0.0.0 --port 8000 --reload --log-config ./log.ini
 
 run_test:
-	coverage run -m pytest ./src/tests -v --log-cli-level=ERROR --asyncio-mode=auto && coverage report -m
+	kedro test
 
 run_update_kedro_context:
 	python3 conf/context_management/main.py

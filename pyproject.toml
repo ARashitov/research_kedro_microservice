@@ -19,9 +19,10 @@ line_length = 120
 known_third_party = "kedro"
 
 [tool.pytest.ini_options]
+asyncio_mode = "auto"
 addopts = """
 --cov-report term-missing \
---cov src/pipelines -ra"""
+--cov src/ -ra"""
 
 [tool.coverage.report]
 fail_under = 0
