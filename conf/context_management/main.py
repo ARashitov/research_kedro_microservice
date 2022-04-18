@@ -1,4 +1,3 @@
-import os
 import logging
 from pathlib import Path
 import configs
@@ -13,7 +12,7 @@ logger.setLevel(logging.INFO)
 for _env in configs.ENVIRONMENTS:
 
     # 1. Credentials export
-    cred_fpath = "conf/context_management/templates/template_credentials.yaml"
+    cred_fpath = "conf/context_management/templates/cred_template.yaml"
     credentials_template = templates_handler.read(cred_fpath)
     credentials = templates_handler.interpolate(credentials_template, configs.CREDENTIALS_MAPPINGS)
     credentials_location = f"conf/{_env}/credentials.yaml"
