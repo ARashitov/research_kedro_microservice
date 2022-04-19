@@ -21,20 +21,19 @@ jobs:
         with:
           github_token: ${{ github.token }}
 
-      - uses: "mikepenz/release-changelog-builder-action@v3"
-        id: github_release
+      - name: Conventional Changelog Action
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
         with:
-          configuration: ".changelog.json"
-          fromTag: ${{ steps.get-latest-stable-release.outputs.tag_name }}
-          toTag: ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.github_token }}
+          output-file: "false"
+          fallback-version: ${{ steps.get-latest-stable-release.outputs.tag_name }}
 
       - name: Create Release
         uses: actions/create-release@v1
         with:
           tag_name: ${{ github.ref_name }}
           release_name: ${{ github.ref_name }}
-          body: ${{steps.github_release.outputs.changelog}}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
