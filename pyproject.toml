@@ -1,9 +1,9 @@
 [app.metadata]
-title = "project_template"
-description = "Routes planning software back-end"
+title = "research_elastic_search"
+description = "Simple application for testing elastic search capabilities."
 
 [tool.commitizen]
-version = "0.2.8"
+version = "0.1.0"
 
 [tool.kedro]
 package_name = "pipelines"
