@@ -28,11 +28,11 @@ jobs:
     - name: Test Pylint linting
       run: bash -c "pylint --rcfile pylint.rc ./src"
 
-    - name: Autotesting
-      env:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AUTH_KEY:  ${{ secrets.AUTH_KEY }}
-        APP_ENV: test
-        google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
-      run: bash -c "make run_update_kedro_context && make run_test"
+    # - name: Autotesting
+    #   env:
+    #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     AUTH_KEY:  ${{ secrets.AUTH_KEY }}
+    #     APP_ENV: test
+    #     google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
+    #   run: bash -c "make run_update_kedro_context && make run_test"

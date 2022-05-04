@@ -46,11 +46,17 @@ run_jupyter:
 run_precommit:
 	pre-commit run --all-files
 
-run_build_docker_image:
-	docker build --file ./docker/Dockerfile --compress --pull --no-cache -t research_elastic_search:latest .
+# run_build_docker_image:
+# 	docker build --file ./docker/Dockerfile --compress --pull --no-cache -t research_elastic_search:latest .
 
-run_docker_container_start:
-	docker-compose -f docker/docker-compose.yaml up -d
+# run_docker_container_start:
+# 	docker-compose -f docker/docker-compose.yaml up -d
 
-run_docker_container_stop:
-	docker-compose -f docker/docker-compose.yaml down
+# run_docker_container_stop:
+# 	docker-compose -f docker/docker-compose.yaml down
+
+run_elk_up:
+	docker-compose -f docker/elk/docker-compose.yml up -d
+
+run_elk_down:
+	docker-compose -f docker/elk/docker-compose.yml down -v
