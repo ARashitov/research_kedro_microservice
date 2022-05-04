@@ -56,7 +56,7 @@ run_precommit:
 # 	docker-compose -f docker/docker-compose.yaml down
 
 run_elk_up:
-	docker-compose -f docker/docker-compose-elk.yml up -d
+	docker-compose -f docker/elk/docker-compose.yml up -d
 
 run_elk_down:
-	docker-compose -f docker/docker-compose-elk.yml down
+	docker-compose -f docker/elk/docker-compose.yml down -v
