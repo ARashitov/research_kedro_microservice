@@ -4,10 +4,11 @@
 """
 from fastapi import FastAPI
 
+from . import middleware
 from .endpoints import template
 from .starter import metadata
 
-# 1. Application init
+
 app = FastAPI(
     title=metadata.title,
     description=metadata.description,
@@ -18,5 +19,6 @@ app = FastAPI(
     },
 )
 
-# 2. Endpoints registration
+middleware.log_endpoint_calls(app)
+
 template.get_endpoint.v1.register_endpoint(app)
