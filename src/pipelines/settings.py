@@ -4,11 +4,13 @@ https://kedro.readthedocs.io/en/stable/kedro_project_setup/settings.html."""
 
 from .hooks import DatasetLoggingHooks
 from .hooks import NodeLoggingHooks
+from .hooks import PipelineLoggingHooks
 
 
 HOOKS = (
     NodeLoggingHooks(),
     DatasetLoggingHooks(),
+    PipelineLoggingHooks(),
 )
 
 # Installed plugins for which to disable hook auto-registration.

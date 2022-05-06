@@ -14,10 +14,9 @@ class NodeLog(BaseModel):
 class PipelineLog(BaseModel):
     inputs: Union[List[str], str, None]
     outputs: Union[List[str], str, None]
-    name: str
-    namespace: Union[str, None]
-    tags: Union[Any, None]
-    confirms: Union[Any, None]
+    pipeline_name: str
+    pipeline_structure: Any
+    extra_params: Any
 
 
 class DatasetLog(BaseModel):
