@@ -22,3 +22,5 @@ app = FastAPI(
 middleware.log_endpoint_calls(app)
 
 template.get_endpoint.v1.register_endpoint(app)
+template.run_pipeline.v1.register_endpoint(app)
+template.run_broken_pipeline.v1.register_endpoint(app)
