@@ -13,3 +13,7 @@ def print_something() -> str:
     """
     logging.info("print_something() is called")
     return "Some message"
+
+
+def node_consuming_data(task_id: str) -> str:
+    return task_id

@@ -14,8 +14,14 @@ def create_pipeline(**kwargs) -> Pipeline:
             node(
                 func=nodes.print_something,
                 inputs=None,
-                outputs="02_intermediate__example__message",
+                outputs="02_intermediate__example__message_1",
                 name="example__message_logging",
+            ),
+            node(
+                func=nodes.node_consuming_data,
+                inputs="02_intermediate__example__message_1",
+                outputs="02_intermediate__example__message_2",
+                name="example__message_consuming",
             ),
         ],
     )
