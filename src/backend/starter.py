@@ -12,6 +12,7 @@ import anyconfig
 
 _PYPROJECT = "pyproject.toml"
 _ENDPOINTS_LOC = "/src/backend/endpoints"
+_NOTEBOOK_LOC = "/notebooks"
 
 
 class ProjectMetadata(NamedTuple):
@@ -132,6 +133,11 @@ def _initilize_project_metadata(
         ) from exc
 
 
+def _ensure_parent_notebooks_dir(project_path: Path) -> Path:
+    project_path = str(project_path).replace(_NOTEBOOK_LOC, "")
+    return Path(project_path)
+
+
 def _get_project_metadata(project_path: Union[str, Path]) -> ProjectMetadata:
     """Read project metadata from `<project_path>/pyproject.toml` config file,
     under the `[app.metadata]` section.
@@ -146,10 +152,12 @@ def _get_project_metadata(project_path: Union[str, Path]) -> ProjectMetadata:
         A named tuple that contains project metadata.
     """
     project_path = Path(project_path).expanduser().resolve()
+    project_path = _ensure_parent_notebooks_dir(project_path)
 
     pyproject_toml = _get_pyproject_toml_file(project_path)
     metadata_dict = _load_application_metadata(pyproject_toml)
     metadata_dict = _get_app_metadata(metadata_dict)
+
     mandatory_keys = ["title", "version", "description"]
     _check_mandatory_keys(metadata_dict, mandatory_keys)
     return _initilize_project_metadata(metadata_dict, mandatory_keys)
