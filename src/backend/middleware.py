@@ -7,8 +7,6 @@
 """
 import json
 import logging
-import sys
-import traceback
 from datetime import datetime
 from typing import Any, Dict, List, Tuple
 
@@ -30,8 +28,6 @@ _DEFAULT_HEADERS = [
     "accept-encoding",
     "connection",
 ]
-_TRACEBACK_RESPONSE_NO = 2
-_TRACEBACK_LIMIT = 30
 
 ENDPOINT_LOGGER = logging.getLogger("endpoint")
 
@@ -50,24 +46,15 @@ def _remove_default_headers(headers: Dict[str, Any]) -> Dict[str, Any]:
     return headers_to_log
 
 
-def _get_traceback() -> str:
-    """
-    Performs generation of exception message as string
-
-    Returns:
-    str: exception message content
-    """
-    tb_content = sys.exc_info()[_TRACEBACK_RESPONSE_NO]
-    tb_content = traceback.format_tb(tb_content, limit=_TRACEBACK_LIMIT)
-    tb_content = "\n".join(tb_content)
-    return tb_content
-
-
 async def _decode_response_body(response: Response):
     response_body = b""
     async for chunk in response.body_iterator:
         response_body += chunk
     return response_body
+
+
+def _is_status_succesfull(response: Response) -> bool:
+    return (response.status_code >= status.HTTP_200_OK) and (response.status_code < status.HTTP_400_BAD_REQUEST)
 
 
 async def _capture_exception_details(response: Response) -> Tuple[Any, Response]:
@@ -79,10 +66,8 @@ async def _capture_exception_details(response: Response) -> Tuple[Any, Response]
     Returns:
     Tuple[Any, Response]: body content & cloned response object
     """
-    is_endpoint_succesfull = (response.status_code >= status.HTTP_200_OK) and (
-        response.status_code < status.HTTP_400_BAD_REQUEST
-    )
-    if not is_endpoint_succesfull:
+
+    if not _is_status_succesfull(response):
         exception_details = await _decode_response_body(response)
         response = _clone_response_object(response, exception_details)
         exception_details = json.loads(exception_details.decode())
@@ -153,8 +138,12 @@ def _mark_service_time_to_header(
     return response
 
 
-def _log_endpoint_call(log: logs.EndpointLogRecord):
-    ENDPOINT_LOGGER.info(json.dumps(log.dict()))
+def _log_endpoint_call(log: logs.EndpointLogRecord, response: Response):
+    json_log_dump = json.dumps(log.dict())
+    if _is_status_succesfull(response):
+        ENDPOINT_LOGGER.info(json_log_dump)
+    else:
+        ENDPOINT_LOGGER.error(json_log_dump)
 
 
 def log_endpoint_calls(app: FastAPI):
@@ -174,7 +163,6 @@ def log_endpoint_calls(app: FastAPI):
         response = _mark_service_time_to_header(response, request_time, response_time)
 
         log, response = await _factory_log(request, response, request_time, response_time)
-        _log_endpoint_call(log)
+        _log_endpoint_call(log, response)
 
-        logging.info(dict(response.headers))
         return response
