@@ -34,7 +34,7 @@ class AbstractLogger(ABC):
     Abstract Node & Pipeline logger
     """
 
-    def _log(self, kedro_log: Dict[str, Any]) -> None:
+    def _log(self, kedro_log: str) -> None:
         KEDRO_LOGGER.info(kedro_log)
 
     def _factory_execution_log(self, *args, **kwargs):
@@ -55,7 +55,8 @@ class AbstractLogger(ABC):
             element_log=element_log,
             execution_log=execution_log,
         )
-        self._log(log_instance.dict())
+        logging.info(log_instance.dict())
+        self._log(json.dumps(log_instance.dict()))
 
 
 class NodeLoggingHooks(AbstractLogger):
@@ -74,7 +75,6 @@ class NodeLoggingHooks(AbstractLogger):
             outputs=node_attrs["_outputs"],
             name=node_attrs["_name"],
             namespace=node_attrs.get("_namespace"),
-            tags=node_attrs.get("_tags"),
             confirms=node_attrs.get("_confirms"),
         )
 
@@ -180,6 +180,7 @@ class PipelineLoggingHooks(AbstractLogger):
             stage=_PIPELINE_STAGE,
             step=_AFTER_STEP,
             datetime=str(self._start_time),
+            duration=duration,
         )
         self._create_log_instance_and_send_to_logger(pipeline_log, execution_log)
 

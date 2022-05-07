@@ -7,7 +7,6 @@ class NodeLog(BaseModel):
     outputs: Union[List[str], str, None]
     name: str
     namespace: Union[str, None]
-    tags: Union[Any, None]
     confirms: Union[Any, None]
 
 
