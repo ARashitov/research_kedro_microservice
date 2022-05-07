@@ -4,8 +4,10 @@
 """
 
 from .main import app
+from .starter import init_kedro_session
 
 
 __all__ = [
     "app",
+    "init_kedro_session",
 ]

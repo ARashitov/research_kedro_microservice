@@ -13,22 +13,18 @@ from src.backend.starter import get_endpoint_tag
 ENDPOINT_DETAILS = {
     "path": get_endpoint_route(__file__),
     "response_model": Status,
-    "response_description": ("Okay template message"),
-    "description": ("Template get endpoint"),
+    "response_description": ("pipeline processing status"),
+    "description": ("Template of api with pipeline execution"),
     "status_code": status.HTTP_200_OK,
     "tags": [get_endpoint_tag(__file__)],
 }
 
+
 HEADERS = {
-    "your_message": Header(
+    "task_id": Header(
         default=None,
-        description="(Optional) message header",
+        description="unique identifier of task",
         convert_underscores=False,
-        example="Hello world!",
-    ),
-    "to_raise_exception": Header(
-        default=False,
-        description="Raises HTTP_500_INTERNAL_SERVER_ERROR exception",
-        convert_underscores=False,
+        example="example_task_id",
     ),
 }

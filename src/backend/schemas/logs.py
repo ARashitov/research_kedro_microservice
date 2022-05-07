@@ -21,4 +21,4 @@ class EndpointLogRecord(BaseModel):
     response_duration: Union[float, str]
     response_headers: Any
 
-    exception_message: Union[str, None]
+    exception_details: Any

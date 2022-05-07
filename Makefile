@@ -30,9 +30,11 @@ env_install_jupyter:
 env_delete:
 	conda remove --name research_elastic_search --all -y
 
+run_uvicorn_local:
+	uvicorn src.backend.main:app --host 0.0.0.0 --port 8000 --reload --log-config ./local_log_config.ini
 
-run_uvicorn:
-	uvicorn src.backend.main:app --host 0.0.0.0 --port 8000 --reload --log-config ./log.ini
+run_uvicorn_remote:
+	uvicorn src.backend.main:app --host 0.0.0.0 --port 8000 --reload --log-config ./remote_log_config.ini
 
 run_test:
 	kedro test

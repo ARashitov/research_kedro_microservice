@@ -23,5 +23,11 @@ def create_pipeline(**kwargs) -> Pipeline:
                 outputs="02_intermediate__example__message_2",
                 name="example__message_consuming",
             ),
+            node(
+                func=lambda x: x / 0,
+                inputs="02_intermediate__example__message_2",
+                outputs="02_intermediate__example__message_3",
+                name="example__division_by_zero",
+            ),
         ],
     )

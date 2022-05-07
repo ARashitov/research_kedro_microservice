@@ -50,8 +50,8 @@ repos:
         -   id: commitizen
             stages: [commit-msg]
     # # NOTE: this one is optional (removing outputs of jupyter)
-    # -   repo: https://github.com/kynan/nbstripout
-    #     rev: 0.5.0
-    #     hooks:
-    #     -    id: nbstripout
-    #          files: ".ipynb$"
+    -   repo: https://github.com/kynan/nbstripout
+        rev: 0.5.0
+        hooks:
+        -    id: nbstripout
+             files: ".ipynb$"
