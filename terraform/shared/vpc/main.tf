@@ -17,9 +17,9 @@ locals {
   # 2nd: auto scaling group subnets for all project environments
   # 3rd: aws batch subnets for all project environments
   start_octect_reserved = 0
-  end_octect_reserved   = local.n_reserved_subnets
+  end_octect_reserved   = local.start_octect_reserved + local.n_reserved_subnets
 
-  start_octect_asg = local.n_reserved_subnets
+  start_octect_asg = local.end_octect_reserved
   end_octect_asg   = local.start_octect_asg + local.n_asg_subnets
 
   start_octect_aws_batch = local.end_octect_asg
