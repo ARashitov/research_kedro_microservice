@@ -1,6 +1,6 @@
 # Project utilities
 env_create:
-	conda create -n research_elastic_search python=3.10 -y
+	conda create -n research_kedro_microservice python=3.10 -y
 
 env_configure: env_install_dependencies env_install_jupyter env_install_precommit_hooks
 	echo "Environment is configured"
@@ -9,8 +9,6 @@ env_install_precommit_hooks:
 	pre-commit install && pre-commit install --hook-type commit-msg
 
 env_install_dependencies:
-# NOTE: kedro is not available for python3.9 yet
-# 	plus, pander[io] conflicts with kedro
 	pip3 install --upgrade pip \
 	&& pip3 install wheel \
 	&& pip3 install -r src/requirements.txt --no-cache-dir
@@ -47,15 +45,6 @@ run_jupyter:
 
 run_precommit:
 	pre-commit run --all-files
-
-# run_build_docker_image:
-# 	docker build --file ./docker/Dockerfile --compress --pull --no-cache -t research_elastic_search:latest .
-
-# run_docker_container_start:
-# 	docker-compose -f docker/docker-compose.yaml up -d
-
-# run_docker_container_stop:
-# 	docker-compose -f docker/docker-compose.yaml down
 
 run_elk_up:
 	docker-compose -f docker/elk/docker-compose.yml up -d
