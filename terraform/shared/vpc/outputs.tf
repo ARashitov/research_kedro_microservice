@@ -23,6 +23,11 @@ output "default_vpc_default_security_group_id" {
   description = "Default security group name"
 }
 
+output "default_security_group_id" {
+  value       = module.vpc.default_security_group_id
+  description = "VPC default security group id"
+}
+
 output "amt_asg_subnets_per_env" {
   value       = var.amt_asg_subnets_per_env
   description = "Amount of subnets for each autoscaling service under project environments"
@@ -107,3 +112,9 @@ output "cidr_end_octect_aws_batch" {
   value       = local.end_octect_aws_batch
   description = "CIDR ending octect value for aws batch subnet"
 }
+
+output "key_pair" {
+  value       = var.key_pair
+  description = "aws instance key used for ssh"
+}
+

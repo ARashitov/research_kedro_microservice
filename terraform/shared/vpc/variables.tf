@@ -34,3 +34,9 @@ variable "environments" {
   ]
   description = "Environments used in project"
 }
+
+variable "key_pair" {
+  type = string
+  default = "aws-us-east-2.pem"
+  description = "aws instance key used for ssh"
+}
