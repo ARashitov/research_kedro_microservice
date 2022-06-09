@@ -1,6 +1,6 @@
 [app.metadata]
-title = "research_elastic_search"
-description = "Simple application for testing elastic search capabilities."
+title = "research_kedro_microservice"
+description = "Small application to explore new method for executional model"
 
 [tool.commitizen]
 version = "0.1.0"
