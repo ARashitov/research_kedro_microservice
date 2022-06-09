@@ -99,7 +99,7 @@ jupyter-latex-envs==1.4.6
 jupyter-nbextensions-configurator==0.4.1
 jupyterlab-pygments==0.2.2
 jupyterlab-widgets==1.1.0
-kedro==0.18.0
+kedro==0.18.1
 keplergl==0.3.2
 lazy-object-proxy==1.7.1
 lxml==4.8.0
