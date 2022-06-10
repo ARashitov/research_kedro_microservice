@@ -37,6 +37,6 @@ variable "environments" {
 
 variable "key_pair" {
   type = string
-  default = "aws-us-east-2.pem"
+  default = "aws-us-east-2"
   description = "aws instance key used for ssh"
 }
