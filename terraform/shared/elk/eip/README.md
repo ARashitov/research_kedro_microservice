@@ -21,7 +21,7 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_eip.lb](https://registry.terraform.io/providers/hashicorp/aws/4.9.0/docs/resources/eip) | resource |
+| [aws_eip.elk](https://registry.terraform.io/providers/hashicorp/aws/4.9.0/docs/resources/eip) | resource |
 | [terraform_remote_state.vpc](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 
 ## Inputs
@@ -30,5 +30,9 @@ No inputs.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_id"></a> [id](#output\_id) | Contains the public IP address |
+| <a name="output_public_dns"></a> [public\_dns](#output\_public\_dns) | Public DNS associated with the Elastic IP address |
+| <a name="output_public_ip"></a> [public\_ip](#output\_public\_ip) | The public IP address |
 <!-- END_TF_DOCS -->

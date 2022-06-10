@@ -10,6 +10,7 @@
 
 | Name | Version |
 |------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.9.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -23,19 +24,23 @@
 
 | Name | Type |
 |------|------|
+| [aws_eip_association.elk_eip](https://registry.terraform.io/providers/hashicorp/aws/4.9.0/docs/resources/eip_association) | resource |
+| [aws_network_interface.elk](https://registry.terraform.io/providers/hashicorp/aws/4.9.0/docs/resources/network_interface) | resource |
+| [aws_ami.ubuntu](https://registry.terraform.io/providers/hashicorp/aws/4.9.0/docs/data-sources/ami) | data source |
+| [aws_subnet.reserved_subnets_id](https://registry.terraform.io/providers/hashicorp/aws/4.9.0/docs/data-sources/subnet) | data source |
+| [terraform_remote_state.aws_eip](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.vpc](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_ami"></a> [ami](#input\_ami) | The AMI from which to launch the instance | `string` | `"ami-08be45d446b4d01f1"` | no |
-| <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Default instance type for proxy instance | `string` | `"c5a.large"` | no |
-| <a name="input_key_name"></a> [key\_name](#input\_key\_name) | Key name | `string` | `"aws-us-east-1"` | no |
+| <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Default instance type for proxy instance | `string` | `"t2.micro"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_public_ip"></a> [public\_ip](#output\_public\_ip) | The public IP address assigned to the instance, if applicable. NOTE: If you are using an aws\_eip with your instance, you should refer to the EIP's address directly and not use `public_ip` as this field will change after the EIP is attached. |
+| <a name="output_ami"></a> [ami](#output\_ami) | AMI assinged to proxy instances |
+| <a name="output_reserved_aws_subnets_id"></a> [reserved\_aws\_subnets\_id](#output\_reserved\_aws\_subnets\_id) | Reserved subnets id |
 <!-- END_TF_DOCS -->

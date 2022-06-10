@@ -12,8 +12,8 @@ locals {
     for cidr_block, subnet_details in data.aws_subnet.reserved_subnets_id :
     subnet_details["id"]
   ]
-  project_name              = replace(data.terraform_remote_state.vpc.outputs.tags.project_name, "_", "-")
-  tags                      = data.terraform_remote_state.vpc.outputs.tags
+  project_name = replace(data.terraform_remote_state.vpc.outputs.tags.project_name, "_", "-")
+  tags         = data.terraform_remote_state.vpc.outputs.tags
 }
 
 
@@ -84,7 +84,7 @@ resource "aws_network_interface" "elk" {
 
 
 resource "aws_eip_association" "elk_eip" {
-  allocation_id = data.terraform_remote_state.aws_eip.outputs.id
+  allocation_id        = data.terraform_remote_state.aws_eip.outputs.id
   network_interface_id = aws_network_interface.elk.id
 }
 
@@ -103,8 +103,8 @@ module "ec2" {
 
   network_interface = [
     {
-      device_index          = 0
-      network_interface_id  = aws_network_interface.elk.id
+      device_index         = 0
+      network_interface_id = aws_network_interface.elk.id
     }
   ]
 
