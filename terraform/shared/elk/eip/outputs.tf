@@ -1,4 +1,14 @@
-# output "public_ip" {
-#   value       = module.ec2.public_ip
-#   description = "The public IP address assigned to the instance, if applicable. NOTE: If you are using an aws_eip with your instance, you should refer to the EIP's address directly and not use `public_ip` as this field will change after the EIP is attached."
-# }
+output "id" {
+  value       = aws_eip.elk.id
+  description = "Contains the public IP address"
+}
+
+output "public_dns" {
+  value       = aws_eip.elk.public_dns
+  description = "Public DNS associated with the Elastic IP address"
+}
+
+output "public_ip" {
+  value       = aws_eip.elk.public_ip
+  description = "The public IP address"
+}
