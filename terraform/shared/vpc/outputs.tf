@@ -44,7 +44,7 @@ output "amt_reserved_subnets_per_env" {
 }
 
 output "environments" {
-  value       = var.amt_asg_subnets_per_env
+  value       = var.environments
   description = "Environments used in project"
 }
 
