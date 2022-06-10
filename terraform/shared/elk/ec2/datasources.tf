@@ -27,7 +27,7 @@ data "terraform_remote_state" "aws_eip" {
   backend = "s3"
   config = {
     bucket = "waste-labs-terraform-backends"
-    key    = "env:/shared/research_kedro_microservice/elk_aws_eip.tfstate"
+    key    = "env:/shared/research_kedro_microservice/elk/eip.tfstate"
     region = "us-east-1"
   }
 }
