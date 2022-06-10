@@ -4,16 +4,16 @@ provider "aws" {
 
 locals {
 
-  vpc_id                    = data.terraform_remote_state.vpc.outputs.vpc_id
-  
-  environments              = data.terraform_remote_state.vpc.outputs.environments
-  env_idx         = index(data.terraform_remote_state.vpc.outputs.environments, terraform.workspace)
+  vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id
 
-  project_name              = replace(data.terraform_remote_state.vpc.outputs.tags.project_name, "_", "-")
-  env                       = replace(terraform.workspace, "_", "-")
+  environments = data.terraform_remote_state.vpc.outputs.environments
+  env_idx      = index(data.terraform_remote_state.vpc.outputs.environments, terraform.workspace)
+
+  project_name = replace(data.terraform_remote_state.vpc.outputs.tags.project_name, "_", "-")
+  env          = replace(terraform.workspace, "_", "-")
 
   # 1. Extraction ASG subnet portioning details
-  n_asg_subnets = data.terraform_remote_state.vpc.outputs.n_asg_subnets
+  n_asg_subnets           = data.terraform_remote_state.vpc.outputs.n_asg_subnets
   amt_asg_subnets_per_env = data.terraform_remote_state.vpc.outputs.amt_asg_subnets_per_env
 
   # 2. Extraction ASG subnet ids for all environment
@@ -29,7 +29,7 @@ locals {
 
   # 3. Extraction ASG subnet id for particular enviornment of TF_WORKSPACE
   subnet_idx_start_env = local.env_idx * local.amt_asg_subnets_per_env
-  subnet_idx_end_env = (local.env_idx + 1) * local.amt_asg_subnets_per_env
+  subnet_idx_end_env   = (local.env_idx + 1) * local.amt_asg_subnets_per_env
   asg_env_subnets_ids = [
     for subnet_idx_end in range(local.subnet_idx_start_env, local.subnet_idx_end_env) :
     local.asg_subnets_ids[subnet_idx_end]
