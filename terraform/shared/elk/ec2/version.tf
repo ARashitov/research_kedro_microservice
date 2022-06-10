@@ -9,7 +9,7 @@ terraform {
   }
   backend "s3" {
     bucket  = "waste-labs-terraform-backends"
-    key     = "research_kedro_microservice/elk.tfstate"
+    key     = "research_kedro_microservice/elk/ec2.tfstate"
     region  = "us-east-1"
     encrypt = true
   }
