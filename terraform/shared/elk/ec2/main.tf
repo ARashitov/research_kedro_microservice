@@ -28,7 +28,6 @@ module "elk_sg" {
   ingress_cidr_blocks = [local.vpc_cidr_block]
   ingress_with_cidr_blocks = [
     {
-      # TODO: remove global access to upload logs to logstash
       from_port   = 5959
       to_port     = 5959
       protocol    = "tcp"
