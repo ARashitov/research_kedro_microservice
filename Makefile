@@ -51,3 +51,6 @@ run_elk_up:
 
 run_elk_down:
 	docker-compose -f docker/elk/docker-compose.yml down -v
+
+run_build_docker_image:
+	docker build --file ./docker/Dockerfile --compress --pull --no-cache -t 946627858531.dkr.ecr.us-east-2.amazonaws.com/research-kedro-microservice:latest .

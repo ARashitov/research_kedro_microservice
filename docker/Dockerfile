@@ -2,28 +2,30 @@ FROM continuumio/miniconda3
 
 LABEL \
   maintainer="Adil Rashitov <adil@wastelabs.co>" \
-  org.opencontainers.image.title="dev-tempate-repo" \
-  org.opencontainers.image.description="Docker image for template kedro project" \
+  org.opencontainers.image.title="research_kedro_microservice" \
+  org.opencontainers.image.description="Docker image for research_kedro_microservice project" \
   org.opencontainers.image.authors="Adil Rashitov <adil@wastelabs.co>" \
-  org.opencontainers.image.url="https://github.com/AtmosOne/dev_template_repo"
+  org.opencontainers.image.url="https://github.com/AtmosOne/research_kedro_microservice"
+
+WORKDIR /application
 
 # 1. Copy dependencies to container
-COPY conf/ ./conf
-COPY data/ ./data
-COPY docker/entrypoint.sh ./
-COPY src ./src
-COPY Makefile ./Makefile
-COPY log.ini ./log.ini
-COPY pylint.rc ./pylint.rc
-COPY pyproject.toml ./pyproject.toml
-COPY setup.cfg ./setup.cfg
+COPY ./ ./
+
 
 # 2. Installation of dependencies
-RUN apt-get update && apt-get install -y software-properties-common ca-certificates build-essential
-RUN make env_install_dependencies
+RUN conda create -n dev_alba_scl_weee python=3.10 -y
 
-# 3. Setup entrypoint
-RUN chmod +x entrypoint.sh
-ENTRYPOINT /bin/bash entrypoint.sh
+ENV PATH /opt/conda/envs/dev_alba_scl_weee/bin:$PATH
+RUN /bin/bash -c "source activate dev_alba_scl_weee"
 
-EXPOSE 8000/tcp
+RUN /bin/bash -c "python3 --version"
+RUN /bin/bash -c "pip3 install -r src/requirements.txt"
+
+# ENTRYPOINT /bin/bash -c "source /opt/conda/bin/activate
+#       && conda activate dev_alba_scl_weee
+#       && python3 conf/context_management/main.py
+#       && gunicorn --bind 0.0.0.0:8000 src.backend.main:app --log-config ./local_log_config.ini --workers 4 -k uvicorn.workers.UvicornWorker --timeout 1800"
+
+EXPOSE 8000
+EXPOSE 8001

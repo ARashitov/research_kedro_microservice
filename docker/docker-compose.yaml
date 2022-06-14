@@ -1,39 +1,14 @@
-version: '3.7'
-
+version: '3'
 services:
 
-  # Elasticsearch Docker Images: https://www.docker.elastic.co/
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.3
-    container_name: elasticsearch
-    environment:
-      - xpack.security.enabled=false
-      - discovery.type=single-node
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    cap_add:
-      - IPC_LOCK
+  nginx:
+    image: nginx:1.21.6
     volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-      - 9300:9300
-
-  kibana:
-    container_name: kibana
-    image: docker.elastic.co/kibana/kibana:8.1.3
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - 5601:5601
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - elasticsearch
-
-volumes:
-  elasticsearch-data:
-    driver: local
+      - backend_latest
+      - osrm_service
+    networks:
+      - alba_scl_wee
+    ports:
+      - 8000:8000
