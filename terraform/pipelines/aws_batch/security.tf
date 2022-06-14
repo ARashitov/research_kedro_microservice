@@ -18,7 +18,7 @@ EOF
 
   tags = merge(
     data.terraform_remote_state.vpc.outputs.tags,
-    {environment = terraform.workspace}
+    { environment = terraform.workspace }
   )
 }
 
@@ -33,7 +33,7 @@ resource "aws_iam_instance_profile" "ecs_instance_role" {
 
   tags = merge(
     data.terraform_remote_state.vpc.outputs.tags,
-    {environment = terraform.workspace}
+    { environment = terraform.workspace }
   )
 }
 
@@ -57,7 +57,7 @@ EOF
 
   tags = merge(
     data.terraform_remote_state.vpc.outputs.tags,
-    {environment = terraform.workspace}
+    { environment = terraform.workspace }
   )
 }
 

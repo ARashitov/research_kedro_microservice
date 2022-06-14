@@ -1,6 +1,31 @@
-# output "arn" {
-#   value       = aws_ecr_repository.ecr.arn
-#   description = " Full ARN of the repository"
+output "ecr_repository_url" {
+  value       = local.ecr_repository_url
+  description = "ECR repository url"
+}
+
+output "project_name" {
+  value       = local.project_name
+  description = ""
+}
+
+output "env" {
+  value       = local.env
+  description = ""
+}
+
+output "aws_batch_env_subnets_ids" {
+  value       = local.aws_batch_env_subnets_ids
+  description = ""
+}
+
+output "aws_batch_subnets_ids" {
+  value       = local.aws_batch_subnets_ids
+  description = ""
+}
+
+# output "aws_batch_subnets_cidr" {
+#   value       = local.aws_batch_subnets_cidr
+#   description = ""
 # }
 
 # output "repository_url" {

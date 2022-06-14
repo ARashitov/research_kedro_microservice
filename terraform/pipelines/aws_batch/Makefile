@@ -1,17 +1,17 @@
 init:
-	export TF_WORKSPACE=shared && terraform init --reconfigure --upgrade
+	terraform init --reconfigure --upgrade
 
 plan:
-	export TF_WORKSPACE=shared && terraform plan
+	terraform plan
 
 apply:
-	export TF_WORKSPACE=shared && terraform apply -auto-approve
+	terraform apply -auto-approve
 
 destroy:
-	export TF_WORKSPACE=shared && terraform destroy
+	terraform destroy
 
 fmt:
-	export TF_WORKSPACE=shared && terraform fmt
+	terraform fmt
 
 lint:
 	tflint .
