@@ -46,10 +46,6 @@ locals {
 
 module "vpc" {
 
-  # TODO:
-  # 1. Reallocate ASG to private subnets
-  # 2. Reallocate AWS batch to private subnets
-  # 3. Enable NAT
   source  = "terraform-aws-modules/vpc/aws"
   version = "= 3.14.0"
 

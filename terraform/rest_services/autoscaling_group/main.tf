@@ -19,25 +19,16 @@ locals {
   # 1. Extraction ASG subnet portioning details
   n_asg_subnets           = data.terraform_remote_state.vpc.outputs.n_asg_subnets
   amt_asg_subnets_per_env = data.terraform_remote_state.vpc.outputs.amt_asg_subnets_per_env
+  asg_subnets_ids         = data.terraform_remote_state.vpc.outputs.asg_subnets_ids
 
-  # 2. Extraction ASG subnet ids for all environment
-  asg_subnets_ids = [
-    for cidr_block, subnet_details in data.aws_subnet.asg_subnets_cidr :
-    subnet_details["id"]
-  ]
-
-  asg_subnets_cidr = [
-    for cidr_block, subnet_details in data.aws_subnet.asg_subnets_cidr :
-    cidr_block
-  ]
-
-  # 3. Extraction ASG subnet id for particular enviornment of TF_WORKSPACE
+  # 2. Extraction ASG subnet id for particular enviornment of TF_WORKSPACE
   subnet_idx_start_env = local.env_idx * local.amt_asg_subnets_per_env
   subnet_idx_end_env   = (local.env_idx + 1) * local.amt_asg_subnets_per_env
   asg_env_subnets_ids = [
     for subnet_idx_end in range(local.subnet_idx_start_env, local.subnet_idx_end_env) :
     local.asg_subnets_ids[subnet_idx_end]
   ]
+
   # TODO: incorporate pulling image from AWS ECR
   target_group_arns = data.terraform_remote_state.alb.outputs.target_group_arns
   user_data         = <<EOF

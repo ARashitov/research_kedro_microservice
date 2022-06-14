@@ -73,14 +73,38 @@ output "reserved_subnets_cidr" {
   description = "CIDR blocks of reserved subnets"
 }
 
+output "asg_subnets_ids" {
+  value = [
+    for subnet_id in range(local.start_octect_asg, local.end_octect_asg) :
+    module.vpc.public_subnets[subnet_id]
+  ]
+  description = "Reserved subnet ids"
+}
+
 output "asg_subnets_cidr" {
   value       = local.asg_subnets_cidr
   description = "CIDR blocks of asg subnets"
 }
 
+output "reserved_subnets_ids" {
+  value = [
+    for subnet_id in range(local.start_octect_reserved, local.end_octect_reserved) :
+    module.vpc.public_subnets[subnet_id]
+  ]
+  description = "Reserved subnet ids"
+}
+
 output "aws_batch_subnets_cidr" {
   value       = local.aws_batch_subnets_cidr
   description = "CIDR blocks of aws batch subnets"
+}
+
+output "aws_batch_subnets_ids" {
+  value = [
+    for subnet_id in range(local.start_octect_aws_batch, local.end_octect_aws_batch) :
+    module.vpc.public_subnets[subnet_id]
+  ]
+  description = "AWS batch subnet ids"
 }
 
 output "cidr_start_octect_reserved" {
@@ -117,4 +141,3 @@ output "key_pair" {
   value       = var.key_pair
   description = "aws instance key used for ssh"
 }
-
