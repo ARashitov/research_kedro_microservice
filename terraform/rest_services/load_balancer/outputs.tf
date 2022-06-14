@@ -15,38 +15,3 @@ output "lb_dns_name" {
   }
   description = "The DNS name of the load balancer."
 }
-
-output "env" {
-  value       = local.env
-  description = ""
-}
-
-output "env_idx" {
-  value       = local.env_idx
-  description = ""
-}
-
-output "asg_subnets_ids" {
-  value       = local.asg_subnets_ids
-  description = ""
-}
-
-output "asg_subnets_cidr" {
-  value       = local.asg_subnets_cidr
-  description = ""
-}
-
-output "subnet_idx_start_env" {
-  value       = local.subnet_idx_start_env
-  description = ""
-}
-
-output "subnet_idx_end_env" {
-  value       = local.subnet_idx_end_env
-  description = ""
-}
-
-output "asg_env_subnets_ids" {
-  value       = local.asg_env_subnets_ids
-  description = ""
-}
