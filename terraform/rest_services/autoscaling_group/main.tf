@@ -5,8 +5,8 @@ provider "aws" {
 
 locals {
 
-  vpc_id                    = data.terraform_remote_state.vpc.outputs.vpc_id
-  vpc_cidr_block            = data.terraform_remote_state.vpc.outputs.vpc_cidr_block
+  vpc_id         = data.terraform_remote_state.vpc.outputs.vpc_id
+  vpc_cidr_block = data.terraform_remote_state.vpc.outputs.vpc_cidr_block
 
   key_pair = data.terraform_remote_state.vpc.outputs.key_pair
 
@@ -39,8 +39,8 @@ locals {
     local.asg_subnets_ids[subnet_idx_end]
   ]
   # TODO: incorporate pulling image from AWS ECR
-  target_group_arns         = data.terraform_remote_state.alb.outputs.target_group_arns
-  user_data                 = <<EOF
+  target_group_arns = data.terraform_remote_state.alb.outputs.target_group_arns
+  user_data         = <<EOF
 #!/bin/bash
 
 export SOFTWARE_BUILD_VERSION=${var.software_build_version}
@@ -62,12 +62,12 @@ http {
     send_timeout 5;
 
     server {
-      listen 80;
+      listen 8000;
 
       location / {
         return 200 'Succesfull reach instance!';
       }
-      
+
     }
 }
 " > nginx.conf
@@ -82,7 +82,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
-      - 80:80
+      - 8000:8000
 
 " > docker-compose.yaml;
 
@@ -97,6 +97,10 @@ resource "aws_launch_template" "this" {
   image_id      = data.aws_ami.ubuntu.id
   instance_type = var.instance_types[terraform.workspace]
 
+  monitoring {
+    enabled = true
+  }
+
   block_device_mappings {
     device_name = "/dev/sda1"
     ebs {
@@ -106,7 +110,7 @@ resource "aws_launch_template" "this" {
 
   network_interfaces {
     associate_public_ip_address = true
-    security_groups             = [
+    security_groups = [
       module.asg_sg.security_group_id
     ]
   }
@@ -132,8 +136,8 @@ module "asg_sg" {
   ingress_cidr_blocks = [local.vpc_cidr_block]
   ingress_with_cidr_blocks = [
     {
-      from_port   = 80
-      to_port     = 80
+      from_port   = 8000
+      to_port     = 8000
       protocol    = "tcp"
       description = "HTTP application ingress traffic allow"
       cidr_blocks = local.vpc_cidr_block
@@ -174,7 +178,7 @@ module "asg" {
   wait_for_capacity_timeout = 0
   health_check_type         = "ELB"
   health_check_grace_period = 100
-  vpc_zone_identifier       = local.asg_subnets_ids
+  vpc_zone_identifier       = local.asg_env_subnets_ids
   key_name                  = local.key_pair
 
   instance_refresh = {
@@ -189,15 +193,14 @@ module "asg" {
   create_launch_template = false
   launch_template        = aws_launch_template.this.name
   default_version        = aws_launch_template.this.latest_version
-  enable_monitoring      = true
 
   target_group_arns = local.target_group_arns
 
   tags = merge(
     data.terraform_remote_state.vpc.outputs.tags,
     {
-      environment              = local.env
-      software_build_version    = var.software_build_version
+      environment            = local.env
+      software_build_version = var.software_build_version
     }
   )
 

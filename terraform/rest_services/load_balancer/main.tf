@@ -49,8 +49,8 @@ module "alb_sg" {
   ingress_cidr_blocks = ["0.0.0.0/0"]
   ingress_with_cidr_blocks = [
     {
-      from_port   = 8000
-      to_port     = 8000
+      from_port   = var.http_listener_port
+      to_port     = var.http_listener_port
       protocol    = "tcp"
       description = "Rest API endpoint port"
       cidr_blocks = "0.0.0.0/0"
@@ -85,7 +85,7 @@ module "alb" {
 
   http_tcp_listeners = [
     {
-      port               = 8000
+      port               = var.http_listener_port
       protocol           = "HTTP"
       target_group_index = 0
     },
@@ -95,7 +95,7 @@ module "alb" {
     {
       name             = "${local.env}-kedro-microservice"
       backend_protocol = "HTTP"
-      backend_port     = 8000
+      backend_port     = var.http_backend_port
       target_type      = "instance"
       health_check = {
         enabled  = true
