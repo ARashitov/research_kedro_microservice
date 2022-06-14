@@ -51,15 +51,15 @@ repos:
             types: [python]
             args: ["--rcfile=pylint.rc", "--disable=E0402,E0611"]
 
-    # -   repo: https://github.com/commitizen-tools/commitizen
-    #     rev: v2.23.0
-    #     hooks:
-    #     -   id: commitizen
-    #         stages: [commit-msg]
+    -   repo: https://github.com/commitizen-tools/commitizen
+        rev: v2.23.0
+        hooks:
+        -   id: commitizen
+            stages: [commit-msg]
 
     # NOTE: this one is optional (removing outputs of jupyter)
-    # -   repo: https://github.com/kynan/nbstripout
-    #     rev: 0.5.0
-    #     hooks:
-    #     -    id: nbstripout
-    #          files: ".ipynb$"
+    -   repo: https://github.com/kynan/nbstripout
+        rev: 0.5.0
+        hooks:
+        -    id: nbstripout
+             files: ".ipynb$"
