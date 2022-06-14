@@ -9,11 +9,11 @@ data "terraform_remote_state" "vpc" {
 
 data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["099720109477"]
+  owners      = ["946627858531"]
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+    values = ["*ubuntu-22.04-lts-docker*"]
   }
 
 }

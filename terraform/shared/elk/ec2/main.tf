@@ -108,6 +108,14 @@ module "ec2" {
     }
   ]
 
+  root_block_device = [
+    {
+      encrypted   = true
+      volume_type = "gp2"
+      volume_size = 30
+    },
+  ]
+
   tags = merge(
     data.terraform_remote_state.vpc.outputs.tags,
     { environment = terraform.workspace }
