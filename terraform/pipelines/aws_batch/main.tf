@@ -1,7 +1,14 @@
-locals {
+provider "aws" {
+  region = data.terraform_remote_state.vpc.outputs.tags.region
+}
 
+locals {
+  region = data.terraform_remote_state.vpc.outputs.tags.region
   vpc_id         = data.terraform_remote_state.vpc.outputs.vpc_id
   vpc_cidr_block = data.terraform_remote_state.vpc.outputs.vpc_cidr_block
+
+  default_security_group_id = data.terraform_remote_state.vpc.outputs.default_security_group_id
+  key_pair = data.terraform_remote_state.vpc.outputs.key_pair
 
   ecr_repository_url = data.terraform_remote_state.ecr.outputs.repository_url
 
@@ -10,6 +17,7 @@ locals {
 
   project_name = replace(data.terraform_remote_state.vpc.outputs.tags.project_name, "_", "-")
   env          = replace(terraform.workspace, "_", "-")
+  short_project_name = "kedro-microservice"
 
   # 1. Extraction Batch subnet partioning details
   n_aws_batch_subnets           = data.terraform_remote_state.vpc.outputs.n_aws_batch_subnets
@@ -24,112 +32,173 @@ locals {
     local.aws_batch_subnets_ids[subnet_idx_end]
   ]
 
+  vpc_tags = data.terraform_remote_state.vpc.outputs.tags
+  docker_image_id = "${local.ecr_repository_url}:${var.software_build_version}"
+
+  tags = merge(
+    data.terraform_remote_state.vpc.outputs.tags,
+    { environment = local.env }
+  )
 }
 
 
-# resource "aws_batch_compute_environment" "aws_batch_ce" {
-
-#   compute_environment_name = "${terraform.workspace}__${data.terraform_remote_state.vpc.outputs.tags.project_name}"
-
-#   # == META CONFIGS ==
-#   lifecycle {
-#     create_before_destroy = true
-#   }
+resource "aws_cloudwatch_log_group" "this" {
+  name              = "/aws/batch/${local.env}/${local.project_name}"
+  retention_in_days = var.logs_retention_in_days
+  tags = local.tags
+}
 
 
-#   compute_resources {
-#     # == GENERAL ==
-#     type = "EC2"
-#     instance_role = aws_iam_instance_profile.ecs_instance_role.arn
+module "batch" {
 
-#     # == PERFORMANCE ==
-#     instance_type = [
-#       "c5a.large",
-#     ]
+  source = "terraform-aws-modules/batch/aws"
 
-#     max_vcpus = var.max_vcpus
-#     min_vcpus = var.min_vcpus
+  instance_iam_role_name        = "${local.env}-${local.short_project_name}-ecs-instance"
+  instance_iam_role_path        = "/batch/"
+  instance_iam_role_description = "IAM instance role/profile for AWS Batch ECS instance(s)"
+  instance_iam_role_additional_policies = [
+    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  ]
+  instance_iam_role_tags = {
+    ModuleCreatedRole = "Yes"
+  }
 
-#     # == NETWORK & SECURITY ==
-#     security_group_ids = [
-#       data.terraform_remote_state.vpc.outputs.default_vpc_sg_id,
-#     ]
+  service_iam_role_name        = "${local.env}-${local.short_project_name}-batch"
+  service_iam_role_path        = "/batch/"
+  service_iam_role_description = "IAM service role for AWS Batch"
+  service_iam_role_tags = {
+    ModuleCreatedRole = "Yes"
+  }
 
-#     # TODO: Setup subnets extraction
-#     subnets = data.terraform_remote_state.vpc.outputs.aws_batch_ec2_subnets
+  create_spot_fleet_iam_role      = true
+  spot_fleet_iam_role_name        = "${local.env}-${local.short_project_name}-spot"
+  spot_fleet_iam_role_path        = "/batch/"
+  spot_fleet_iam_role_description = "IAM spot fleet role for AWS Batch"
+  spot_fleet_iam_role_tags = {
+    ModuleCreatedRole = "Yes"
+  }
 
-#     tags = merge(
-#       data.terraform_remote_state.vpc.outputs.tags,
-#       {environment = terraform.workspace}
-#     )
-#   }
+  compute_environments = {
+    # a_ec2 = {
+    #   name_prefix = "ec2"
 
-#   # == SECURITY & DEPENDENCY ==
-#   service_role = aws_iam_role.aws_batch_service_role.arn
-#   type         = "MANAGED"
-#   depends_on   = [
-#     aws_iam_role_policy_attachment.aws_batch_service_role
-#   ]
+    #   compute_resources = {
+    #     type           = "EC2"
+    #     min_vcpus      = 4
+    #     max_vcpus      = 16
+    #     desired_vcpus  = 4
+    #     instance_types = var.instance_types[terraform.workspace]
 
-#   tags = merge(
-#     data.terraform_remote_state.vpc.outputs.tags,
-#     {environment = terraform.workspace}
-#   )
-# }
+    #     security_group_ids = [local.default_security_group_id]
+    #     subnets            = local.aws_batch_env_subnets_ids
 
+    #     # Note - any tag changes here will force compute environment replacement
+    #     # which can lead to job queue conflicts. Only specify tags that will be static
+    #     # for the lifetime of the compute environment
+    #     tags = {
+    #       # This will set the name on the Ec2 instances launched by this compute environment
+    #       Name = local.name
+    #       Type = "Ec2"
+    #     }
+    #   }
+    # }
 
-# resource "aws_batch_job_definition" "aws_batch_job_def" {
+    b_ec2_spot = {
+      name_prefix = "ec2_spot"
 
-#   name = "${terraform.workspace}__${data.terraform_remote_state.vpc.outputs.tags.project_name}"
-#   type = "container"
+      compute_resources = {
+        type                = "SPOT"
+        allocation_strategy = "SPOT_CAPACITY_OPTIMIZED"
+        bid_percentage      = var.max_on_demand_price_percentage
 
-#   container_properties = <<CONTAINER_PROPERTIES
-# {
-# TODO: add software build as image to docker
-#     "image": "${var.docker_image_id}",
-#     "memory": ${var.docker_memory},
-#     "vcpus": ${var.docker_vcpus},
-#     "volumes": [
-#       {
-#         "host": {
-#           "sourcePath": "/tmp"
-#         },
-#         "name": "tmp"
-#       }
-#     ],
-#     "environment": [
-#         {"name": "aws_access_key_id", "value": "${var.aws_access_key_id}"},
-#         {"name": "aws_secret_access_key", "value": "${var.aws_secret_access_key}"}
-#     ],
-#     "mountPoints": [
-#         {
-#           "sourceVolume": "tmp",
-#           "containerPath": "/tmp",
-#           "readOnly": false
-#         }
-#     ]
-# }
-# CONTAINER_PROPERTIES
+        min_vcpus      = var.min_vcpus[terraform.workspace]
+        max_vcpus      = var.max_vcpus[terraform.workspace]
+        desired_vcpus  = var.desired_vcpus[terraform.workspace]
+        instance_types = var.instance_types[terraform.workspace]
 
-#   tags = merge(
-#     data.terraform_remote_state.vpc.outputs.tags,
-#     {environment = terraform.workspace}
-#   )
+        security_group_ids = [local.default_security_group_id]
+        subnets            = local.aws_batch_env_subnets_ids
 
-# }
+        # Note - any tag changes here will force compute environment replacement
+        # which can lead to job queue conflicts. Only specify tags that will be static
+        # for the lifetime of the compute environment
+        tags = merge(
+          local.tags,
+          {
+            Name = "${local.env}-${local.project_name}-spot"
+            Type = "EC2Spot"
+          }
+        )
 
-# resource "aws_batch_job_queue" "queue" {
-# TODO: update names of resources
-#   name     = "${terraform.workspace}__${data.terraform_remote_state.vpc.outputs.tags.project_name}"
-#   state    = "ENABLED"
-#   priority = 1
-#   compute_environments = [
-#     aws_batch_compute_environment.aws_batch_ce.arn,
-#   ]
+      }
+    }
 
-#   tags = merge(
-#     data.terraform_remote_state.vpc.outputs.tags,
-#     {environment = terraform.workspace}
-#   )
+  }
 
-# }
+  # Job queus and scheduling policies
+  job_queues = {
+
+    high_priority = {
+      name     = "${local.env}-${local.project_name}-spot"
+      state    = "ENABLED"
+      priority = 99
+
+      fair_share_policy = {
+        compute_reservation = 1
+        share_decay_seconds = 3600
+
+        share_distribution = [{
+          share_identifier = "A1*"
+          weight_factor    = 0.2
+          }, {
+          share_identifier = "A2"
+          weight_factor    = 0.2
+        }]
+      }
+
+      tags = local.tags
+    }
+  }
+
+  job_definitions = {
+    default_job_definition = {
+      name           = "${local.env}-${local.project_name}-job-definition"
+      propagate_tags = true
+
+      container_properties = jsonencode({
+        command = ["ls", "-la"]
+        image   = local.docker_image_id
+        resourceRequirements = [
+          { type = "VCPU", value = var.container_vcpu[terraform.workspace] },
+          { type = "MEMORY", value = var.container_memory[terraform.workspace] }
+        ]
+        logConfiguration = {
+          logDriver = "awslogs"
+          options = {
+            awslogs-group         = aws_cloudwatch_log_group.this.id
+            awslogs-region        = local.region
+            awslogs-stream-prefix = "${local.env}-${local.project_name}"
+          }
+        }
+      })
+
+      attempt_duration_seconds = 60
+      retry_strategy = {
+        attempts = 3
+        evaluate_on_exit = {
+          retry_error = {
+            action       = "RETRY"
+            on_exit_code = 1
+          }
+          exit_success = {
+            action       = "EXIT"
+            on_exit_code = 0
+          }
+        }
+      }
+
+      tags = local.tags
+    }
+  }
+
+}

@@ -28,10 +28,15 @@ output "aws_batch_subnets_ids" {
 #   description = ""
 # }
 
-# output "repository_url" {
-#   value       = aws_ecr_repository.ecr.repository_url
-#   description = "The URL of the repository (in the form `aws_account_id.dkr.ecr.region.amazonaws.com/repositoryName`)."
-# }
+output "docker_image_id" {
+  value       = local.docker_image_id
+  description = "Docker image build"
+}
+
+output "ce_instance_type" {
+  value       = var.instance_types[terraform.workspace]
+  description = "Docker image build"
+}
 
 # output "registry_id" {
 #   value       = aws_ecr_repository.ecr.registry_id
