@@ -3,20 +3,20 @@ provider "aws" {
 }
 
 locals {
-  region = data.terraform_remote_state.vpc.outputs.tags.region
+  region         = data.terraform_remote_state.vpc.outputs.tags.region
   vpc_id         = data.terraform_remote_state.vpc.outputs.vpc_id
   vpc_cidr_block = data.terraform_remote_state.vpc.outputs.vpc_cidr_block
 
   default_security_group_id = data.terraform_remote_state.vpc.outputs.default_security_group_id
-  key_pair = data.terraform_remote_state.vpc.outputs.key_pair
+  key_pair                  = data.terraform_remote_state.vpc.outputs.key_pair
 
   ecr_repository_url = data.terraform_remote_state.ecr.outputs.repository_url
 
   environments = data.terraform_remote_state.vpc.outputs.environments
   env_idx      = index(data.terraform_remote_state.vpc.outputs.environments, terraform.workspace)
 
-  project_name = replace(data.terraform_remote_state.vpc.outputs.tags.project_name, "_", "-")
-  env          = replace(terraform.workspace, "_", "-")
+  project_name       = replace(data.terraform_remote_state.vpc.outputs.tags.project_name, "_", "-")
+  env                = replace(terraform.workspace, "_", "-")
   short_project_name = "kedro-microservice"
 
   # 1. Extraction Batch subnet partioning details
@@ -32,7 +32,7 @@ locals {
     local.aws_batch_subnets_ids[subnet_idx_end]
   ]
 
-  vpc_tags = data.terraform_remote_state.vpc.outputs.tags
+  vpc_tags        = data.terraform_remote_state.vpc.outputs.tags
   docker_image_id = "${local.ecr_repository_url}:${var.software_build_version}"
 
   tags = merge(
@@ -45,13 +45,14 @@ locals {
 resource "aws_cloudwatch_log_group" "this" {
   name              = "/aws/batch/${local.env}/${local.project_name}"
   retention_in_days = var.logs_retention_in_days
-  tags = local.tags
+  tags              = local.tags
 }
 
 
 module "batch" {
 
-  source = "terraform-aws-modules/batch/aws"
+  source  = "terraform-aws-modules/batch/aws"
+  version = ">= 1.1.1, < 2.0.0"
 
   instance_iam_role_name        = "${local.env}-${local.short_project_name}-ecs-instance"
   instance_iam_role_path        = "/batch/"

@@ -11,8 +11,8 @@ variable "max_on_demand_price_percentage" {
 }
 
 variable "desired_vcpus" {
-  type        = map(number)
-  default     = {
+  type = map(number)
+  default = {
     test    = 2
     ua_test = 2
     prod    = 2
@@ -21,8 +21,8 @@ variable "desired_vcpus" {
 }
 
 variable "max_vcpus" {
-  type        = map(number)
-  default     = {
+  type = map(number)
+  default = {
     test    = 16
     ua_test = 16
     prod    = 16
@@ -31,8 +31,8 @@ variable "max_vcpus" {
 }
 
 variable "min_vcpus" {
-  type        = map(number)
-  default     = {
+  type = map(number)
+  default = {
     test    = 2
     ua_test = 2
     prod    = 2
