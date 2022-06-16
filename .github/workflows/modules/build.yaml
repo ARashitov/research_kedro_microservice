@@ -1,0 +1,34 @@
+name: "Docker image builder & AWS ECR publish"
+
+on:
+  workflow_call:
+    inputs:
+      build_tag:
+        required: true
+        type: string
+
+jobs:
+
+  build:
+
+    steps:
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build & Push to AWS ECR
+        env:
+          ECR_REGISTRY: 946627858531.dkr.ecr.us-east-2.amazonaws.com
+          ECR_REPOSITORY: research-kedro-microservice
+          IMAGE_TAG: ${{ inputs.build_tag }}
+        run: |
+          docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache --force-rm .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

@@ -6,6 +6,7 @@ on:
 
 jobs:
 
+
   linting:
 
     runs-on: ubuntu-22.04
@@ -24,6 +25,7 @@ jobs:
 
     - name: Execution of pre-commit hooks over all files
       run: bash -c "pre-commit run --all-files"
+
 
   testing:
 
@@ -51,3 +53,32 @@ jobs:
         ENVIRONMENT: test
         google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
       run: bash -c "make run_update_kedro_context && make run_test"
+
+
+  build:
+
+    runs-on: ubuntu-22.04
+    # needs: [linting, testing]
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Image tag extraction from timestamp
+        uses: josStorer/get-current-time@v2
+        id: build-tag
+        with:
+          format: YYYY-MM-DD--HH-mm-ss
+          utcOffset: "+00:00"
+
+      - name: Image tag show
+        env:
+          image_tag: ${{ steps.build-tag.outputs.formattedTime }}
+        run: echo $image_tag
+
+      - name: Software build
+        uses: ./.github/workflows/modules/build.yaml
+        with:
+          build_tag: ${{ steps.build-tag.outputs.formattedTime }}
+
+    outputs:
+      build-tag: ${{ steps.build-tag.outputs.formattedTime }}
