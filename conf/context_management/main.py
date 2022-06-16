@@ -33,3 +33,6 @@ for _env in configs.ENVIRONMENTS:
     templates_handler.export(params_template, parameters_location)
 
     logging.info(f"Finish export context for {_env} environment\n")
+
+templates_handler.export(credentials, "conf/base/credentials.yaml")
+templates_handler.export(credentials, "conf/local/credentials.yaml")
