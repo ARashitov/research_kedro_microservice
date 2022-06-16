@@ -90,7 +90,7 @@ jobs:
       run: cd ${{ matrix.infrastructure-components }} && terraform fmt -check
 
     - name: ${{ matrix.infrastructure-components }} terraform init
-      run: cd ${{ matrix.infrastructure-components }} && terraform init
+      run: cd ${{ matrix.infrastructure-components }} && make init
 
     - name: ${{ matrix.infrastructure-components }} terraform plan
       env:
@@ -100,7 +100,7 @@ jobs:
         TF_WORKSPACE: test
         TF_VAR_google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
       id: plan
-      run: cd ${{ matrix.infrastructure-components }} && terraform plan
+      run: cd ${{ matrix.infrastructure-components }} && make plan
 
     - name: ${{ matrix.infrastructure-components }} terraform plan check
       if: steps.plan.outcome == 'failure'
