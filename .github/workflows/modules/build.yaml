@@ -6,20 +6,20 @@ on:
       build_tag:
         required: true
         type: string
-      ecr_registry:
-        required: true
-        type: string
-      ecr_repository:
-        required: true
-        type: string
-      aws_region:
-        required: true
-        type: string
-    secrets:
-      aws_access_key_id:
-        required: True
-      aws_secret_access_key:
-        required: True
+    #   ecr_registry:
+    #     required: true
+    #     type: string
+    #   ecr_repository:
+    #     required: true
+    #     type: string
+    #   aws_region:
+    #     required: true
+    #     type: string
+    # secrets:
+    #   aws_access_key_id:
+    #     required: True
+    #   aws_secret_access_key:
+    #     required: True
 
 jobs:
 
@@ -29,12 +29,17 @@ jobs:
 
     steps:
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.aws_access_key_id }}
-          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
-          aws-region: ${{ inputs.aws_region }}
+      - name: Print image tag
+        env:
+          build_tag: ${{ inputs.build_tag }}
+        run: echo $build_tag
+
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-access-key-id: ${{ secrets.aws_access_key_id }}
+      #     aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+      #     aws-region: ${{ inputs.aws_region }}
 
       # - name: Login to Amazon ECR
       #   id: login-ecr
