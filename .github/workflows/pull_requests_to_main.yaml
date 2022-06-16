@@ -75,8 +75,7 @@ jobs:
           build_tag: ${{ steps.build-tag.outputs.formattedTime }}
         run: echo $build_tag
 
-      - name: Software build and publish to AWS ECR
-        uses: AtmosOne/research_kedro_microservice/.github/workflows/modules/build.yaml@main
+      - uses: AtmosOne/research_kedro_microservice/.github/workflows/modules/build.yaml@main
         with:
           build_tag: ${{ steps.build-tag.outputs.formattedTime }}
         #   ecr_registry: 946627858531.dkr.ecr.us-east-2.amazonaws.com
