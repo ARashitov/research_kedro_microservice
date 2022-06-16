@@ -2,11 +2,7 @@ version: 1
 disable_existing_loggers: False
 formatters:
     simple:
-        format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    json_formatter:
-        format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        class: pythonjsonlogger.jsonlogger.JsonFormatter
-
+        format: "[%(asctime)s][%(name)s][%(levelname)s][%(message)s]"
 handlers:
 
     null_handler:
@@ -41,19 +37,19 @@ handlers:
 loggers:
     anyconfig:
         level: WARNING
-        handlers: [null_handler]
+        handlers: [console]
         propagate: no
 
     kedro.io:
         level: INFO
-        handlers: [null_handler]
+        handlers: [console]
 
         propagate: no
     kedro.pipeline:
         level: INFO
-        handlers: [null_handler]
+        handlers: [console]
         propagate: no
 
 root:
     level: INFO
-    handlers: [null_handler]
+    handlers: [console]
