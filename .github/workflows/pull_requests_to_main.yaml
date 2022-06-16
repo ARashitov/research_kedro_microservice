@@ -1,4 +1,4 @@
-name: "Continuous integration testing"
+name: "Continuous integration testing & Deployment to test"
 
 on:
   pull_request:
@@ -91,6 +91,8 @@ jobs:
 
     - name: ${{ matrix.infrastructure-components }} terraform init
       run: cd ${{ matrix.infrastructure-components }} && make init
+      env:
+        TF_WORKSPACE: test
 
     - name: ${{ matrix.infrastructure-components }} terraform plan
       env:
@@ -105,6 +107,7 @@ jobs:
     - name: ${{ matrix.infrastructure-components }} terraform plan check
       if: steps.plan.outcome == 'failure'
       run: exit 1
+
 
   build:
 
@@ -148,3 +151,43 @@ jobs:
 
     outputs:
       build_tag: ${{ steps.build-tag.outputs.formattedTime }}
+
+
+  deployment:
+
+    runs-on: ubuntu-22.04
+    needs: [build]
+    strategy:
+      matrix:
+        infrastructure-components: [
+          "terraform/rest_services/autoscaling_group",
+          "terraform/pipelines/aws_batch",
+        ]
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: ${{ matrix.infrastructure-components }} terraform plan
+        env:
+          TF_VAR_software_build_version: latest
+          TF_VAR_aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_WORKSPACE: test
+          TF_VAR_google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
+        id: plan
+        run: cd ${{ matrix.infrastructure-components }} && make plan
+
+      - name: ${{ matrix.infrastructure-components }} terraform plan check
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: ${{ matrix.infrastructure-components }} terraform apply
+        env:
+          TF_VAR_software_build_version: latest
+          TF_VAR_aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_WORKSPACE: test
+          TF_VAR_google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
+        id: plan
+        run: cd ${{ matrix.infrastructure-components }} && make apply
