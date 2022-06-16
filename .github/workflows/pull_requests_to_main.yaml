@@ -175,6 +175,16 @@ jobs:
           TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           TF_WORKSPACE: test
           TF_VAR_google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
+        id: init
+        run: cd ${{ matrix.infrastructure-components }} && make init
+
+      - name: ${{ matrix.infrastructure-components }} terraform plan
+        env:
+          TF_VAR_software_build_version: ${{ needs.build.outputs.build_tag }}
+          TF_VAR_aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_WORKSPACE: test
+          TF_VAR_google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
         id: plan
         run: cd ${{ matrix.infrastructure-components }} && make plan
 
