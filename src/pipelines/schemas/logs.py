@@ -1,4 +1,6 @@
 from typing import Any, List, Literal, Union
+
+#  pylint: disable=no-name-in-module
 from pydantic import BaseModel
 
 
