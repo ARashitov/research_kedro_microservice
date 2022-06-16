@@ -189,5 +189,4 @@ jobs:
           TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           TF_WORKSPACE: test
           TF_VAR_google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
-        id: plan
         run: cd ${{ matrix.infrastructure-components }} && make apply
