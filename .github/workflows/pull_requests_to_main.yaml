@@ -55,31 +55,31 @@ jobs:
       run: bash -c "make run_update_kedro_context && make run_test"
 
 
-  # build:
+  build:
 
-  #   runs-on: ubuntu-22.04
-  #   # needs: [linting, testing]
-  #   steps:
+    runs-on: ubuntu-22.04
+    # needs: [linting, testing]
+    steps:
 
-  #     - name: Image tag extraction from timestamp
-  #       uses: josStorer/get-current-time@v2
-  #       id: build-tag
-  #       with:
-  #         format: YYYY-MM-DD--HH-mm-ss
-  #         utcOffset: "+00:00"
+      - name: Image tag extraction from timestamp
+        uses: josStorer/get-current-time@v2
+        id: build-tag
+        with:
+          format: YYYY-MM-DD--HH-mm-ss
+          utcOffset: "+00:00"
 
-  #     - name: Image tag show
-  #       env:
-  #         build_tag: ${{ steps.build-tag.outputs.formattedTime }}
-  #       run: echo $build_tag
+      - name: Image tag show
+        env:
+          build_tag: ${{ steps.build-tag.outputs.formattedTime }}
+        run: echo $build_tag
 
-  #     - name: Software build and publish to AWS ECR
-  #       uses: ./.github/workflows/modules/build.yaml
-  #       with:
-  #         build_tag: ${{ steps.build-tag.outputs.formattedTime }}
-  #       secrets:
-  #         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # - name: Software build and publish to AWS ECR
+      #   uses: ./.github/workflows/modules/build.yaml
+      #   with:
+      #     build_tag: ${{ steps.build-tag.outputs.formattedTime }}
+      #   secrets:
+      #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-  #   outputs:
-  #     build_tag: ${{ steps.build-tag.outputs.formattedTime }}
+    outputs:
+      build_tag: ${{ steps.build-tag.outputs.formattedTime }}
