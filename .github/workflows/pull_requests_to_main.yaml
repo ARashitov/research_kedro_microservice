@@ -73,10 +73,13 @@ jobs:
           image_tag: ${{ steps.build-tag.outputs.formattedTime }}
         run: echo $image_tag
 
-      - name: Software build
+      - name: Software build and publish to AWS ECR
         uses: ./.github/workflows/modules/build.yaml
         with:
           build_tag: ${{ steps.build-tag.outputs.formattedTime }}
+        secrets:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     outputs:
       build-tag: ${{ steps.build-tag.outputs.formattedTime }}
