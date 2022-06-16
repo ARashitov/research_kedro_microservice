@@ -61,8 +61,6 @@ jobs:
     # needs: [linting, testing]
     steps:
 
-      - uses: actions/checkout@v2
-
       - name: Image tag extraction from timestamp
         uses: josStorer/get-current-time@v2
         id: build-tag
