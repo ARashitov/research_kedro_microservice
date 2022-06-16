@@ -1,4 +1,4 @@
-name: "Create and publish docker image to AWS ECR"
+name: Create and publish docker image
 
 on:
   workflow_call:
@@ -18,14 +18,14 @@ on:
     secrets:
       aws_access_key_id:
         required: True
-        type: string
       aws_secret_access_key:
         required: True
-        type: string
 
 jobs:
 
-  build-and-publish-to-ecr:
+  create-and-publish-ecr:
+
+    runs-on: ubuntu-22.04
 
     steps:
 
