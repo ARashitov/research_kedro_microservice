@@ -61,6 +61,8 @@ jobs:
     # needs: [linting, testing]
     steps:
 
+      - uses: actions/checkout@v2
+
       - name: Image tag extraction from timestamp
         uses: josStorer/get-current-time@v2
         id: build-tag
@@ -73,13 +75,16 @@ jobs:
           build_tag: ${{ steps.build-tag.outputs.formattedTime }}
         run: echo $build_tag
 
-      # - name: Software build and publish to AWS ECR
-      #   uses: ./.github/workflows/modules/build.yaml
-      #   with:
-      #     build_tag: ${{ steps.build-tag.outputs.formattedTime }}
-      #   secrets:
-      #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Software build and publish to AWS ECR
+        uses: ./.github/workflows/modules/build.yaml
+        with:
+          build_tag: ${{ steps.build-tag.outputs.formattedTime }}
+          ecr_registry: 946627858531.dkr.ecr.us-east-2.amazonaws.com
+          ecr_repository: research-kedro-microservice
+          aws_region: us-east-2
+        secrets:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     outputs:
       build_tag: ${{ steps.build-tag.outputs.formattedTime }}
