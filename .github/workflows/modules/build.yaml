@@ -1,4 +1,4 @@
-name: "Docker image builder & AWS ECR publish"
+name: "Create and publish docker image to AWS ECR"
 
 on:
   workflow_call:
@@ -6,10 +6,15 @@ on:
       build_tag:
         required: true
         type: string
+    secrets:
+      aws-access-key-id:
+        required: True
+      aws-secret-access-key:
+        required: True
 
 jobs:
 
-  build:
+  build-and-publish-to-ecr:
 
     steps:
 
@@ -18,8 +23,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           aws-region: us-east-2
 
       - name: Login to Amazon ECR
