@@ -1,14 +1,10 @@
-name: Continuous integration testing
+name: "Continuous integration testing"
 
 on:
   pull_request:
     branches: [ main ]
 
 jobs:
-
-  strategy:
-      matrix:
-        os: [macos-11, macos-12, ubuntu-20.04, ubuntu-22.04]
 
   linting:
 
@@ -32,6 +28,9 @@ jobs:
   testing:
 
     runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-11, macos-12, ubuntu-20.04, ubuntu-22.04]
 
     steps:
 
