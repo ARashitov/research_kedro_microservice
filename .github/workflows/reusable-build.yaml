@@ -1,0 +1,55 @@
+name: Create and publish docker image
+
+on:
+  workflow_call:
+    inputs:
+      build_tag:
+        required: true
+        type: string
+    #   ecr_registry:
+    #     required: true
+    #     type: string
+    #   ecr_repository:
+    #     required: true
+    #     type: string
+    #   aws_region:
+    #     required: true
+    #     type: string
+    # secrets:
+    #   aws_access_key_id:
+    #     required: True
+    #   aws_secret_access_key:
+    #     required: True
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-22.04
+
+    steps:
+
+      - name: Print image tag
+        env:
+          build_tag: ${{ inputs.build_tag }}
+        run: echo $build_tag
+
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-access-key-id: ${{ secrets.aws_access_key_id }}
+      #     aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+      #     aws-region: ${{ inputs.aws_region }}
+
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v1
+
+      # - name: Build & Push to AWS ECR
+      #   env:
+      #     ECR_REGISTRY: ${{ inputs.ecr_registry }}
+      #     ECR_REPOSITORY: ${{ inputs.ecr_repository }}
+      #     IMAGE_TAG: ${{ inputs.build_tag }}
+      #   run: |
+      #     docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache --force-rm .
+      #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
