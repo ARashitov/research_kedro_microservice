@@ -2,16 +2,28 @@
 from the Kedro defaults. For further information, including these default values, see
 https://kedro.readthedocs.io/en/stable/kedro_project_setup/settings.html."""
 
-# from .hooks import DatasetLoggingHooks
-# from .hooks import NodeLoggingHooks
-# from .hooks import PipelineLoggingHooks
+import logging
+
+# from . import hooks
 
 
-HOOKS = (
-    # NodeLoggingHooks(),
-    # DatasetLoggingHooks(),
-    # PipelineLoggingHooks(),
-)
+PIPELINE_LOGGER_NAME = "pipeline"
+HOOKS = ()
+
+
+# if hooks.ENVIORNMENT.lower() == "test":
+#     logging.warn("Kedro profiling hooks are activated")
+#     HOOKS = (
+#         hooks.NodeLoggingHooks(),
+#         hooks.DatasetLoggingHooks(),
+#         hooks.PipelineLoggingHooks(),
+#     )
+
+
+def get_logger():
+    logger = logging.getLogger(PIPELINE_LOGGER_NAME)
+    return logger
+
 
 # Installed plugins for which to disable hook auto-registration.
 # DISABLE_HOOKS_FOR_PLUGINS = ("kedro-viz",)
