@@ -2,16 +2,44 @@
 from the Kedro defaults. For further information, including these default values, see
 https://kedro.readthedocs.io/en/stable/kedro_project_setup/settings.html."""
 
-# from .hooks import DatasetLoggingHooks
-# from .hooks import NodeLoggingHooks
-# from .hooks import PipelineLoggingHooks
+import logging
+import sys
+from pathlib import Path
+
+from kedro.extras.extensions.ipython import _find_kedro_project
+
+PIPELINE_LOGGER_NAME = "pipeline"
+HOOKS = ()
 
 
-HOOKS = (
-    # NodeLoggingHooks(),
-    # DatasetLoggingHooks(),
-    # PipelineLoggingHooks(),
-)
+def expand_project_path() -> str:
+    """Function performs extraction of kedro context using built-in tools
+
+    Args:
+        env (str): input environment
+
+    Returns:
+        KedroContext: Generated kedro context
+    """
+    # 1. Bootstrapping project to find main path
+    startup_path = Path.cwd()
+    project_path = _find_kedro_project(startup_path)
+    sys.path.append(str(project_path))
+
+
+# if hooks.ENVIORNMENT.lower() == "test":
+#     logging.warn("Kedro profiling hooks are activated")
+#     HOOKS = (
+#         hooks.NodeLoggingHooks(),
+#         hooks.DatasetLoggingHooks(),
+#         hooks.PipelineLoggingHooks(),
+#     )
+
+
+def get_logger():
+    logger = logging.getLogger(PIPELINE_LOGGER_NAME)
+    return logger
+
 
 # Installed plugins for which to disable hook auto-registration.
 # DISABLE_HOOKS_FOR_PLUGINS = ("kedro-viz",)

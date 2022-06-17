@@ -1,35 +1,22 @@
-# Below are listed the most commong dataset types
-01_raw__customer_data@csv:
+
+02_intermediate__geocoding__input:
   type: PartitionedDataSet
   dataset: pandas.CSVDataSet
-  path: s3://dev-template-repo/test/01_raw/customer_data/
+  path: s3://dev-data-temp/research-kedro-microservice/test/02_intermediate/geocoding/input/
   credentials: aws_s3_credentials
-  layer: 01_raw
+  layer: 02_intermediate
+
+02_intermediate__geocoding__output:
+  type: PartitionedDataSet
+  dataset: pandas.CSVDataSet
+  path: s3://dev-data-temp/research-kedro-microservice/test/02_intermediate/geocoding/output/
+  credentials: aws_s3_credentials
+  layer: 02_intermediate
+
+02_intermediate__data__upload_task__output:
+  type: PartitionedDataSet
+  dataset: pandas.CSVDataSet
+  path: s3://dev-alba-scl-weee/test/02_intermediate/data/upload_task/output/
+  credentials: aws_s3_credentials
+  layer: 02_intermediate
   filename_suffix: .csv
-
-02_intermediate__csv_partitions:
-  type: PartitionedDataSet
-  dataset: pandas.CSVDataSet
-  path: s3://dev-template-repo/test/02_intermediate/csv_partitions/
-  credentials: aws_s3_credentials
-  layer: 02_intermediate
-
-02_intermediate__json_partitions:
-  type: PartitionedDataSet
-  dataset: kedro.extras.datasets.json.JSONDataSet
-  path: s3://dev-template-repo/test/02_intermediate/json_partitions/
-  credentials: aws_s3_credentials
-  layer: 02_intermediate
-  filename_suffix: .json
-
-02_intermediate__api_dataset:
-  type: kedro.extras.datasets.api.APIDataSet
-  url: https://raw.githubusercontent.com/WasteLabs/schema_designs/main/schemas/weee/weee_input_job_schema.yaml
-  method: get
-  layer: 02_intermediate
-
-02_intermediate__parquest_dataset:
-  type: kedro.extras.datasets.pandas.ParquetDataSet
-  filepath: s3://dev-template-repo/test/02_intermediate/parquest_partitions/
-  credentials: aws_s3_credentials
-  layer: 02_intermediate

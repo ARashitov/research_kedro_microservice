@@ -3,10 +3,9 @@ import traceback
 from typing import Any, Dict
 
 from fastapi import HTTPException, status
+from kedro.framework.session import KedroSession
 from kedro.io.core import AbstractDataSet
 from kedro.runner import SequentialRunner
-
-from src.pipelines.extras.session import KedroSession
 
 
 _TRACEBACK_RESPONSE_NO = 2

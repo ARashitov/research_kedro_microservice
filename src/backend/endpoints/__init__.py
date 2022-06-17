@@ -3,9 +3,9 @@
     Author: Adil Rashitov
 """
 
-from . import template
+# from . import template
 
 
 __all__ = [
-    "template",
+    # "template",
 ]
