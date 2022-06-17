@@ -22,7 +22,10 @@ known_third_party = "kedro"
 asyncio_mode = "auto"
 addopts = """
 --cov-report term-missing \
---cov src/ -ra"""
+--cov src/ -ra \
+--log-level=INFO \
+--tb=line \
+-n auto"""
 
 [tool.coverage.report]
 fail_under = 0
