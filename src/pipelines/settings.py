@@ -3,12 +3,28 @@ from the Kedro defaults. For further information, including these default values
 https://kedro.readthedocs.io/en/stable/kedro_project_setup/settings.html."""
 
 import logging
+import sys
+from pathlib import Path
 
-# from . import hooks
-
+from kedro.extras.extensions.ipython import _find_kedro_project
 
 PIPELINE_LOGGER_NAME = "pipeline"
 HOOKS = ()
+
+
+def expand_project_path() -> str:
+    """Function performs extraction of kedro context using built-in tools
+
+    Args:
+        env (str): input environment
+
+    Returns:
+        KedroContext: Generated kedro context
+    """
+    # 1. Bootstrapping project to find main path
+    startup_path = Path.cwd()
+    project_path = _find_kedro_project(startup_path)
+    sys.path.append(str(project_path))
 
 
 # if hooks.ENVIORNMENT.lower() == "test":

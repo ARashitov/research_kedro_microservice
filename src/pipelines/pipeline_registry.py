@@ -3,6 +3,10 @@ from typing import Dict
 
 from kedro.pipeline import Pipeline
 
+from .settings import expand_project_path
+
+expand_project_path()
+# flake8: noqa: I202,I100
 from .pipelines import division_by_zero
 from .pipelines import example
 from .pipelines import geocoding
