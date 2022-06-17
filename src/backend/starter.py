@@ -7,12 +7,6 @@ from pathlib import Path
 from typing import Any, Dict, List, NamedTuple, Union
 
 import anyconfig
-from kedro.extras.extensions.ipython import _find_kedro_project
-from kedro.framework.context.context import KedroContext
-from kedro.framework.startup import bootstrap_project
-
-from src.pipelines.extras.session import KedroSession
-
 
 _PYPROJECT = "pyproject.toml"
 _ENDPOINTS_LOC = "/src/backend/endpoints"
@@ -199,31 +193,6 @@ def get_endpoint_tag(endpoint_path: str) -> str:
     """
     route = get_endpoint_route(endpoint_path)
     return route.split("/")[0]
-
-
-def init_kedro_session(env: str, trace_id: str) -> KedroContext:
-    """Function performs extraction of kedro context using built-in tools
-
-    Args:
-        env (str): input environment
-
-    Returns:
-        KedroContext: Generated kedro context
-    """
-    # 1. Bootstrapping project to find main path
-    startup_path = Path.cwd()
-    project_path = _find_kedro_project(startup_path)
-    metadata = bootstrap_project(project_path)
-
-    # 2. Initlize session & create context
-    session = KedroSession.create(
-        package_name=metadata.package_name,
-        project_path=project_path,
-        trace_id=trace_id,
-        env=env,
-    )
-
-    return session
 
 
 metadata = _get_project_metadata(Path.cwd())
