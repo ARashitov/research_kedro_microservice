@@ -1,4 +1,4 @@
-name: "Continuous integration testing & Deployment to test"
+name: "Continuous integration testing"
 
 on:
   pull_request:
@@ -27,120 +27,120 @@ jobs:
       run: bash -c "pre-commit run --all-files"
 
 
-  testing-application:
+  # testing-application:
 
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-11, macos-12, ubuntu-20.04, ubuntu-22.04]
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [macos-11, macos-12, ubuntu-20.04, ubuntu-22.04]
 
-    steps:
+  #   steps:
 
-    - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v2
 
-    - name: Set up Python 3.10.5
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.10.5
+  #     - name: Set up Python 3.10.5
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: 3.10.5
 
-    - name: Building test environment
-      run: bash -c "make env_install_dependencies"
+  #     - name: Building test environment
+  #       run: bash -c "make env_install_dependencies"
 
-    - name: Autotesting
-      env:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        ENVIRONMENT: test
-        google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
-      run: bash -c "make run_update_kedro_context && make run_test"
-
-
-  testing-terraform:
-
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        infrastructure-components: [
-          "terraform/rest_services/load_balancer",
-          "terraform/rest_services/autoscaling_group",
-          "terraform/pipelines/aws_batch",
-          "terraform/shared/ecr",
-          "terraform/shared/elk/ec2",
-          "terraform/shared/elk/eip",
-          "terraform/shared/vpc",
-        ]
-
-    steps:
-
-    - uses: actions/checkout@v2
-
-    - name: "Setup AWS Credentials"
-      run: |
-          mkdir -p ~/.aws
-          echo "[default]" > ~/.aws/credentials
-          echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
-          echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_version: 1.1.8
-
-    - name: ${{ matrix.infrastructure-components }} format check
-      run: cd ${{ matrix.infrastructure-components }} && terraform fmt -check
-
-    - name: ${{ matrix.infrastructure-components }} terraform init
-      run: cd ${{ matrix.infrastructure-components }} && make init
-      env:
-        TF_WORKSPACE: test
-
-    - name: ${{ matrix.infrastructure-components }} terraform plan
-      env:
-        TF_VAR_software_build_version: latest
-        TF_VAR_aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        TF_WORKSPACE: test
-        TF_VAR_google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
-      id: plan
-      run: cd ${{ matrix.infrastructure-components }} && make plan
-
-    - name: ${{ matrix.infrastructure-components }} terraform plan check
-      if: steps.plan.outcome == 'failure'
-      run: exit 1
+  #     - name: Autotesting
+  #       env:
+  #         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         ENVIRONMENT: test
+  #         google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
+  #       run: bash -c "make run_update_kedro_context && make run_test"
 
 
-  testing-docker-pipeline:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        kedro_run: [
-          "export task_id=TruckRoutePlans_2022-03-25_IWS_1_small && kedro run --pipeline=geocoding.geodata_gov_hk.v1 --env=test",
-        ]
+  # testing-terraform:
 
-    steps:
+  #   runs-on: ubuntu-22.04
+  #   strategy:
+  #     matrix:
+  #       infrastructure-components: [
+  #         "terraform/rest_services/load_balancer",
+  #         "terraform/rest_services/autoscaling_group",
+  #         "terraform/pipelines/aws_batch",
+  #         "terraform/shared/ecr",
+  #         "terraform/shared/elk/ec2",
+  #         "terraform/shared/elk/eip",
+  #         "terraform/shared/vpc",
+  #       ]
 
-      - uses: actions/checkout@v2
+  #   steps:
 
-      - name: Build docker image
-        env:
-          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          IMAGE_TAG: latest
-        run: |
-          docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache --force-rm .
+  #   - uses: actions/checkout@v2
 
-      - name: Export env file
-        env:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          ENVIRONMENT: test
-        run: printenv >> .env
+  #   - name: "Setup AWS Credentials"
+  #     run: |
+  #         mkdir -p ~/.aws
+  #         echo "[default]" > ~/.aws/credentials
+  #         echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+  #         echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
 
-      - name: Execute pipeline
-        env:
-          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          IMAGE_TAG: latest
-        run: |
-          docker run --env-file=.env $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG python3 conf/context_management/main.py && {{ matrix.kedro_run }}
+  #   - name: Setup Terraform
+  #     uses: hashicorp/setup-terraform@v1
+  #     with:
+  #       terraform_version: 1.1.8
+
+  #   - name: ${{ matrix.infrastructure-components }} format check
+  #     run: cd ${{ matrix.infrastructure-components }} && terraform fmt -check
+
+  #   - name: ${{ matrix.infrastructure-components }} terraform init
+  #     run: cd ${{ matrix.infrastructure-components }} && make init
+  #     env:
+  #       TF_WORKSPACE: test
+
+  #   - name: ${{ matrix.infrastructure-components }} terraform plan
+  #     env:
+  #       TF_VAR_software_build_version: latest
+  #       TF_VAR_aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       TF_WORKSPACE: test
+  #       TF_VAR_google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
+  #     id: plan
+  #     run: cd ${{ matrix.infrastructure-components }} && make plan
+
+  #   - name: ${{ matrix.infrastructure-components }} terraform plan check
+  #     if: steps.plan.outcome == 'failure'
+  #     run: exit 1
+
+
+  # testing-docker-pipeline:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       kedro_run: [
+  #         "export task_id=TruckRoutePlans_2022-03-25_IWS_1_small && kedro run --pipeline=geocoding.geodata_gov_hk.v1 --env=test",
+  #       ]
+
+  #   steps:
+
+  #     - uses: actions/checkout@v2
+
+  #     - name: Build docker image
+  #       env:
+  #         ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+  #         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+  #         IMAGE_TAG: latest
+  #       run: |
+  #         docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache --force-rm .
+
+  #     - name: Export env file
+  #       env:
+  #         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws_region: ${{ secrets.AWS_REGION }}
+  #         ENVIRONMENT: test
+  #       run: printenv >> .env
+
+  #     - name: Execute pipeline
+  #       env:
+  #         ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+  #         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+  #         IMAGE_TAG: latest
+  #       run: |
+  #         docker run --env-file=.env $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG python3 conf/context_management/main.py && {{ matrix.kedro_run }}
