@@ -1,14 +1,21 @@
 version: '3'
 services:
 
-  nginx:
-    image: nginx:1.21.6
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - backend_latest
-      - osrm_service
-    networks:
-      - alba_scl_wee
-    ports:
-      - 8000:8000
+  # nginx:
+  #   image: nginx:1.21.6
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #   depends_on:
+  #     - backend_latest
+  #     - osrm_service
+  #   networks:
+  #     - alba_scl_wee
+  #   ports:
+  #     - 8000:8000
+
+  # test_pipeline_run:
+  #   image: 946627858531.dkr.ecr.us-east-2.amazonaws.com/research-kedro-microservice:latest
+  #   env_file: ../.env
+  #   command: bash -c "
+  #     python3 conf/context_management/main.py &&
+  #     kedro run --pipeline=geocoding.geodata_gov_hk.v1 --env=test"
