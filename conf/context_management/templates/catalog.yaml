@@ -5,6 +5,7 @@
   path: s3://dev-data-temp/{s3_bucket}/{env}/02_intermediate/geocoding/input/
   credentials: {credentials}
   layer: 02_intermediate
+  filename_suffix: .csv
 
 02_intermediate__geocoding__output:
   type: PartitionedDataSet
@@ -12,6 +13,7 @@
   path: s3://dev-data-temp/{s3_bucket}/{env}/02_intermediate/geocoding/output/
   credentials: {credentials}
   layer: 02_intermediate
+  filename_suffix: .csv
 
 02_intermediate__data__upload_task__output:
   type: PartitionedDataSet
