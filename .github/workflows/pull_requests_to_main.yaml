@@ -107,3 +107,40 @@ jobs:
     - name: ${{ matrix.infrastructure-components }} terraform plan check
       if: steps.plan.outcome == 'failure'
       run: exit 1
+
+
+  testing-docker-pipeline:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        kedro_run: [
+          "export task_id=TruckRoutePlans_2022-03-25_IWS_1_small && kedro run --pipeline=geocoding.geodata_gov_hk.v1 --env=test",
+        ]
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Build docker image
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: latest
+        run: |
+          docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache --force-rm .
+
+      - name: Export env file
+        env:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          ENVIRONMENT: test
+        run: printenv >> .env
+
+      - name: Execute pipeline
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: latest
+        run: |
+          docker run --env-file=.env $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG python3 conf/context_management/main.py && {{ matrix.kedro_run }}
