@@ -1,0 +1,51 @@
+name: Docker Image CI for kedro build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  test-kedro-build:
+
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        kedro_run: [
+          "export task_id=TruckRoutePlans_2022-03-25_IWS_1_small && kedro run --pipeline=geocoding.geodata_gov_hk.v1 --env=test",
+        ]
+
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Build the Docker image
+      env:
+        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+        IMAGE_TAG: latest
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: ${{ secrets.AWS_REGION }}
+        ENVIRONMENT: test
+      run: |
+        docker build \
+        --file ./docker/Dockerfile \
+        --compress \
+        --pull \
+        --no-cache \
+        -t 946627858531.dkr.ecr.us-east-2.amazonaws.com/research-kedro-microservice:latest \
+        --build-arg aws_access_key_id=$aws_access_key_id \
+        --build-arg aws_secret_access_key=$aws_secret_access_key \
+        .
+
+    - name: Running kedro pipeline within container
+      env:
+        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+        IMAGE_TAG: latest
+      run: |
+        docker run $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ${{ matrix.kedro_run }}
