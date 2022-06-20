@@ -53,4 +53,13 @@ run_elk_down:
 	docker-compose -f docker/elk/docker-compose.yml down -v
 
 run_build_docker_image:
-	docker build --file ./docker/Dockerfile --compress --pull --no-cache -t 946627858531.dkr.ecr.us-east-2.amazonaws.com/research-kedro-microservice:latest .
+	docker build \
+    --file ./docker/Dockerfile \
+    --compress \
+    --pull \
+    --no-cache \
+    -t 946627858531.dkr.ecr.us-east-2.amazonaws.com/research-kedro-microservice:latest \
+    --build-arg aws_access_key_id=$aws_access_key_id \
+    --build-arg aws_secret_access_key=$aws_secret_access_key \
+    --build-arg google_maps_key=$google_maps_key \
+    .
