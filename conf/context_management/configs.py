@@ -21,5 +21,4 @@ CATALOG_MAPPINGS = {
 CREDENTIALS_MAPPINGS = {
     "{aws_access_key_id}": os.environ["aws_access_key_id"],
     "{aws_secret_access_key}": os.environ["aws_secret_access_key"],
-    "{google_map}": os.environ["google_maps_key"],
 }

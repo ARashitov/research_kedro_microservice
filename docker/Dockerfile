@@ -9,23 +9,18 @@ LABEL \
 
 WORKDIR /application
 
-# 1. Copy dependencies to container
+
 COPY ./ ./
 
+ARG aws_access_key_id
+ARG aws_secret_access_key
+ARG google_maps_key
+ENV aws_access_key_id=$aws_access_key_id
+ENV aws_secret_access_key=$aws_secret_access_key
+ENV google_maps_key=$google_maps_key
 
-# 2. Installation of dependencies
-# RUN conda create -n research_kedro_microservice python=3.10 -y
 
-# ENV PATH /opt/conda/envs/research_kedro_microservice/bin:$PATH
-# RUN /bin/bash -c "source activate research_kedro_microservice"
-
-RUN /bin/bash -c "python3 --version"
 RUN /bin/bash -c "pip3 install -r src/requirements.txt"
-
-# ENTRYPOINT /bin/bash -c "source /opt/conda/bin/activate
-#       && conda activate research_kedro_microservice
-#       && python3 conf/context_management/main.py
-#       && gunicorn --bind 0.0.0.0:8000 src.backend.main:app --log-config ./local_log_config.ini --workers 4 -k uvicorn.workers.UvicornWorker --timeout 1800"
+CMD /bin/bash -c "python3 conf/context_management/main.py"
 
 EXPOSE 8000
-EXPOSE 8001
