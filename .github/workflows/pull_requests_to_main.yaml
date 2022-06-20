@@ -1,58 +1,59 @@
+
 name: "Continuous integration testing"
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
 
 
-  linting:
+  # linting:
 
-    runs-on: ubuntu-22.04
-
-    steps:
-
-    - uses: actions/checkout@v2
-
-    - name: Set up Python 3.10.5
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.10.5
-
-    - name: Building test environment
-      run: bash -c "make env_install_dependencies"
-
-    - name: Execution of pre-commit hooks over all files
-      run: bash -c "pre-commit run --all-files"
-
-
-  # testing-application:
-
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [macos-11, macos-12, ubuntu-20.04, ubuntu-22.04]
+  #   runs-on: ubuntu-22.04
 
   #   steps:
 
-  #     - uses: actions/checkout@v2
+  #   - uses: actions/checkout@v2
 
-  #     - name: Set up Python 3.10.5
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: 3.10.5
+  #   - name: Set up Python 3.10.5
+  #     uses: actions/setup-python@v2
+  #     with:
+  #       python-version: 3.10.5
 
-  #     - name: Building test environment
-  #       run: bash -c "make env_install_dependencies"
+  #   - name: Building test environment
+  #     run: bash -c "make env_install_dependencies"
 
-  #     - name: Autotesting
-  #       env:
-  #         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         ENVIRONMENT: test
-  #         google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
-  #       run: bash -c "make run_update_kedro_context && make run_test"
+  #   - name: Execution of pre-commit hooks over all files
+  #     run: bash -c "pre-commit run --all-files"
+
+
+  testing-application:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-11, macos-12, ubuntu-20.04, ubuntu-22.04]
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.10.5
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10.5
+
+      - name: Building test environment
+        run: bash -c "make env_install_dependencies"
+
+      - name: Autotesting
+        env:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ENVIRONMENT: test
+          google_maps_key:  ${{ secrets.GOOGLE_MAPS_KEY }}
+        run: bash -c "make run_update_kedro_context && make run_test"
 
 
   # testing-terraform:
