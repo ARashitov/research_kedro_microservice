@@ -5,6 +5,7 @@
 from fastapi import FastAPI
 
 from . import middleware
+from .endpoints import geocoding
 from .endpoints import template
 from .starter import metadata
 
@@ -22,5 +23,10 @@ app = FastAPI(
 middleware.log_endpoint_calls(app)
 
 template.get_endpoint.v1.register_endpoint(app)
+geocoding.inputs.v1.register_endpoint(app)
+geocoding.outputs.v1.register_endpoint(app)
+geocoding.status.v1.register_endpoint(app)
+geocoding.trigger.v1.register_endpoint(app)
+
 # template.run_pipeline.v1.register_endpoint(app)
 # template.run_broken_pipeline.v1.register_endpoint(app)

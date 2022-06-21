@@ -7,6 +7,12 @@ from pathlib import Path
 from typing import Any, Dict, List, NamedTuple, Union
 
 import anyconfig
+from fastapi import status
+from src.backend.handlers.exception import get_http_exception
+import yaml
+
+from .settings import ENVIRONMENT
+
 
 _PYPROJECT = "pyproject.toml"
 _ENDPOINTS_LOC = "/src/backend/endpoints"
@@ -193,6 +199,23 @@ def get_endpoint_tag(endpoint_path: str) -> str:
     """
     route = get_endpoint_route(endpoint_path)
     return route.split("/")[0]
+
+
+def read_raw_catalog_content(fpath: str = f"conf/{ENVIRONMENT}/catalog.yaml") -> Dict[str, Any]:
+    """
+    Reads raw catalog.yaml -> dictionary
+    """
+    try:
+        # 1. Reading test env catalog, parameters & credentials
+        with open(fpath) as f:
+            content = yaml.safe_load(f)
+        return content
+    except Exception as exc:
+        message = f"failed reading raw kedro catalog: {exc}"
+        get_http_exception(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            message=message,
+        )
 
 
 metadata = _get_project_metadata(Path.cwd())

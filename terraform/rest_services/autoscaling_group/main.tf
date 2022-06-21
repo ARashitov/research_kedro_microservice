@@ -33,51 +33,48 @@ locals {
   target_group_arns = data.terraform_remote_state.alb.outputs.target_group_arns
   user_data         = <<EOF
 #!/bin/bash
+cd /home/ubuntu;
 
+# 1. Env vars
 export SOFTWARE_BUILD_VERSION=${var.software_build_version}
+export aws_access_key_id=${var.aws_access_key_id};
+export aws_secret_access_key=${var.aws_secret_access_key};
+export aws_region=${data.terraform_remote_state.vpc.outputs.tags.region}
+export ENVIRONMENT=${terraform.workspace};
 
-# 1. Export nginx configs
-echo "
-user  nginx;
-worker_processes 10;
-
-events {
-    worker_connections   1000;
-}
-http {
-    sendfile on;
-    underscores_in_headers on;
-    proxy_read_timeout 5;
-    proxy_connect_timeout 5;
-    proxy_send_timeout 5;
-    send_timeout 5;
-
-    server {
-      listen 8000;
-
-      location / {
-        return 200 'Succesfull reach instance!';
-      }
-
-    }
-}
-" > nginx.conf
+printenv > .env;
 
 # 2. Export docker-compose file
 echo "Export docker-compose file..."
 echo "version: '3'
 services:
 
-  nginx:
-    image: nginx:1.21.6
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  backend:
+    image: 946627858531.dkr.ecr.us-east-2.amazonaws.com/research-kedro-microservice:${var.software_build_version}
     ports:
       - 8000:8000
+    env_file: .env
+    command: bash -c \"gunicorn
+      --bind 0.0.0.0:8000 src.backend.main:app
+      --log-config ./local_log_config.ini
+      --workers 4
+      -k uvicorn.workers.UvicornWorker
+      --timeout 1800\"
 
 " > docker-compose.yaml;
 
-# 2. Start docker-compose
+# 3. Export aws credentials
+echo "[default]" >> .aws_credentials
+echo aws_access_key_id = $aws_access_key_id >> .aws_credentials
+echo aws_secret_access_key = $aws_secret_access_key >> .aws_credentials
+export AWS_CONFIG_FILE=/home/ubuntu/.aws_credentials;
+
+# 4. Authorization
+/usr/local/bin/aws --version;
+/usr/local/bin/aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 946627858531.dkr.ecr.us-east-2.amazonaws.com
+
+
+# 4. Start docker-compose
 /usr/bin/docker-compose -f docker-compose.yaml up -d
 EOF
 }

@@ -73,7 +73,7 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "02_intermediate__geocoding__v1__finished",
                     "params:common.task_id",
                 ],
-                outputs="02_intermediate__data__upload_task__output",
+                outputs="02_intermediate__geocoding__output",
                 name="geocoding__geodata_gov_hk__v1__export_result",
             ),
         ],

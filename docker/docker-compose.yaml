@@ -16,4 +16,12 @@ services:
   test_pipeline_run:
     image: 946627858531.dkr.ecr.us-east-2.amazonaws.com/research-kedro-microservice:latest
     env_file: ../.env
-    command: bash -c "cat conf/base/credentials.yaml"
+    ports:
+      - 8000:8000
+    # command: bash -c "kedro test"
+    command: bash -c "gunicorn
+      --bind 0.0.0.0:8000 src.backend.main:app
+      --log-config ./local_log_config.ini
+      --workers 4
+      -k uvicorn.workers.UvicornWorker
+      --timeout 1800"

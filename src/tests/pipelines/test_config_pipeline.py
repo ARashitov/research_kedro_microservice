@@ -25,4 +25,3 @@ class TestConfigPipeline:
         )
 
         assert "params:common.task_id" in result.keys()
-        assert "params:credentials.google_maps_key" in result.keys()
