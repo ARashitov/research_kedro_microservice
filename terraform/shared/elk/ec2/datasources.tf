@@ -13,7 +13,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["*ubuntu-22.04-lts-docker*"]
+    values = ["ubuntu-22.04"]
   }
 
 }

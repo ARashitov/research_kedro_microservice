@@ -47,6 +47,17 @@ variable "ebs_root_volume_size" {
 variable "software_build_version" {
   type        = string
   description = "Dockerized application build version"
+  default = "2022-06-21--12-42-03"
+}
+
+variable "aws_access_key_id" {
+  description = "aws access key id to use by application"
+  type        = string
+}
+
+variable "aws_secret_access_key" {
+  description = "aws secret access key to use by application"
+  type        = string
 }
 
 # variable "auth_keys_front_and_back" {

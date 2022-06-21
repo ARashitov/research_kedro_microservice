@@ -72,7 +72,7 @@ variable "container_memory" {
 
 variable "software_build_version" {
   type        = string
-  default     = "latest"
+  default     = "2022-06-21--12-42-03"
   description = "Software build version"
 }
 
