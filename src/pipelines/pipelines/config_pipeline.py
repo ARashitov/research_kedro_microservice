@@ -24,11 +24,5 @@ def create_pipeline(**kwargs) -> Pipeline:
                 outputs="params:common.task_id",
                 name="geocoding__config__extraction__task_id",
             ),
-            node(
-                func=lambda x: x["google_maps_key"],
-                inputs="02_intermediate__env_variables",
-                outputs="params:credentials.google_maps_key",
-                name="geocoding__config__extraction__google_map_key",
-            ),
         ],
     )
