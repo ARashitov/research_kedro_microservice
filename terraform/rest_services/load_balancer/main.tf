@@ -90,7 +90,7 @@ module "alb" {
       health_check = {
         enabled  = true
         interval = 10
-        path     = "/"
+        path     = "/docs"
         protocol = "HTTP"
         matcher  = "200-399"
       }
