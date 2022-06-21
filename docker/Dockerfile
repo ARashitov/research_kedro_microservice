@@ -21,6 +21,10 @@ ENV google_maps_key=$google_maps_key
 
 
 RUN /bin/bash -c "pip3 install -r src/requirements.txt"
+RUN /bin/bash -c "pip3 uninstall boto3 aiobotocore -y"
+RUN /bin/bash -c "pip3 install boto3==1.24.13"
+RUN /bin/bash -c "pip3 install aiobotocore==2.3.3"
+
 CMD /bin/bash -c "python3 conf/context_management/main.py"
 
 EXPOSE 8000
